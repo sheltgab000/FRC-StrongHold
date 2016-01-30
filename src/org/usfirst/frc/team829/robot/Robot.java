@@ -13,26 +13,14 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-public class Robot extends IterativeRobot {
-    
-	private double shootingSpeed = .90;													// Variable that controls the shooter's speed
-	private double slowingSpeed = .20;													// Variable that controls the slowing speed
+public class Robot extends IterativeRobot {												// Variable that controls the slowing speed
 	
-	enum ShooterStatus{																	// The enum that controls the shooter status
-		SHOOTING,
-		SLOWING,
-		STOPPED
-	}
 	
-	Drive drive;
+	Drive drive;														// Variable that stores the shooter's status
 	
-	ShooterStatus shooterStatus;														// Variable that stores the shooter's status
+	Shooter shooter;
 	
-	Compressor compressor;																// The compressor
-	
-	Talon shooter1, shooter2;															// Motor controllers used for the shooter 	(TALON SR)
-	
-	DigitalInput stopped, slowing;														// Limit switches used for the shooter
+	Compressor compressor;																	// Limit switches used for the shooter
 	
 	Joystick dual, leftStick, rightStick;												// Controls being used with the robot
 	
@@ -54,25 +42,17 @@ public class Robot extends IterativeRobot {
 	NIVision.ParticleFilterCriteria2 criteria[] = new NIVision.ParticleFilterCriteria2[1];
 	NIVision.ParticleFilterOptions2 filterOptions = new NIVision.ParticleFilterOptions2(0,0,1,1);*/
     
-	   public void robotInit() {
-        shooterStatus = ShooterStatus.STOPPED;											// Sets the statuses to their default values
-        
-        shooter1 = new Talon(0);														// Initializes the shooter motors
-        shooter2 = new Talon(1);														// ...
-        
-        stopped = new DigitalInput(0);													// Initializes the limit switches
-        slowing = new DigitalInput(1);													// ...
+	   public void robotInit() {												// ...
         
         leftStick = new Joystick(0);													// Initializes the Joysticks used
         rightStick = new Joystick(1);													// ...
-        dual = new Joystick(2);															// ...
-        
-        SmartDashboard.putNumber("shooting speed", shootingSpeed);						// SmartDashboard variables						
-        SmartDashboard.putNumber("slowing speed", slowingSpeed);						// ...
+        dual = new Joystick(2);			
         
         compressor.start();																// START COMPRESSOR
         
         drive = new Drive();
+        
+        shooter = new Shooter();
         
         /*camera = CameraServer.getInstance();
         camera.setQuality(50);
@@ -124,15 +104,8 @@ public class Robot extends IterativeRobot {
     }
     
     public void teleopPeriodic() {														// Teleop Period
-        
-    	SmartDashboard.putBoolean("Stop Switch", stopped.get());						// SmartDashboard used to view variables
-    	SmartDashboard.putBoolean("slowing Switch", slowing.get());						// ...
-    	SmartDashboard.putBoolean("Fire Button", dual.getRawButton(2));					// ...
-    	SmartDashboard.putNumber("shooterMotor1", shooter2.get());						// ...
-    	SmartDashboard.putNumber("shooterMotor2", shooter1.get());						// ...
-    	
-    	shootingSpeed = SmartDashboard.getNumber("shooting speed");						// ...
-    	slowingSpeed = SmartDashboard.getNumber("slowing speed");						// ...
+        					// ...
+    	SmartDashboard.putBoolean("Fire Button", dual.getRawButton(2));	
     	
     	drive.update(-leftStick.getY(), -rightStick.getY());							// Drives using joysticks, and changes transmission if needed
     	
@@ -140,38 +113,9 @@ public class Robot extends IterativeRobot {
     		drive.transmissionPressed();
     	}
     	
-    	switch(shooterStatus){															// Changes the shooter using Button 2 and the limit switches
-    	case STOPPED :
-    		if(dual.getRawButton(2))
-    			shooterStatus = ShooterStatus.SHOOTING;
-    		break;
-    	case SHOOTING:
-    		if(slowing.get())
-    			shooterStatus = ShooterStatus.SLOWING;
-    		break;
-    		
-    	case SLOWING:
-    		if(stopped.get())
-    			shooterStatus = ShooterStatus.STOPPED;
-    		break;
-    	}
-    	
-    	
-    	switch(shooterStatus){															// Changes the shooter status depending on the SHOOTER STATUS
-    	case STOPPED :
-    		shooter1.set(0);
-    		shooter2.set(0);
-    		break;
-    	case SHOOTING:
-    		shooter1.set(shootingSpeed);
-    		shooter2.set(shootingSpeed);
-    		break;
-    		
-    	case SLOWING:
-    		shooter1.set(slowingSpeed);
-    		shooter2.set(slowingSpeed);
-    		break;
-    	}
+    	if(dual.getRawButton(2))
+    		shooter.shootPressed();
+    	shooter.update();
     	
     	
     	/*NIVision.Rect rect = new NIVision.Rect(10, 10, 100, 100);
