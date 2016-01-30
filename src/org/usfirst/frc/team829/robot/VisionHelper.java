@@ -11,7 +11,7 @@ public class VisionHelper {
 	private boolean uploadingToServer = false;
 	
 	private int session;
-	private int imaqError;
+	//private int imaqError;
 	private Image frame;
 	private Image binaryFrame;
 	

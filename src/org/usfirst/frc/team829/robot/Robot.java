@@ -25,7 +25,7 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	       rightStick = new Joystick(1);	// ...
 	       dual = new Joystick(2);			
 	       
-	       Compressor comppressor = new Compressor();	//set up the compressor
+	       Compressor compressor = new Compressor();	//set up the compressor
 	       compressor.start();							// START COMPRESSOR
 	       
 	       drive = new Drive();
