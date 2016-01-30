@@ -12,22 +12,21 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-public class Robot extends IterativeRobot {												// Variable that controls the slowing speed
+public class Robot extends IterativeRobot {
 	
+	Drive drive;																		// Object for the drive and transmission
 	
-	Drive drive;														// Variable that stores the shooter's status
+	Shooter shooter;																	// Object for the shooter
 	
-	Shooter shooter;
+	Compressor compressor;																// Object for the compressor
 	
-	Compressor compressor;																	// Limit switches used for the shooter
-	
-	Joystick dual, leftStick, rightStick;												// Controls being used with the robot
+	Joystick dual, leftStick, rightStick;												// Controls objects
 	
 	//CameraServer camera;
 	
-	int session;																		// Used for vision or something
+	int session;
 	
-	VisionHelper visionHelper;															// Used for vision or something
+	VisionHelper visionHelper;
 	
 	NIVision.Range TOTE_HUE_RANGE = new NIVision.Range(100, 155);						//Default hue range for yellow tote
 	NIVision.Range TOTE_SAT_RANGE = new NIVision.Range(67, 255);						//Default saturation range for yellow tote
@@ -41,13 +40,13 @@ public class Robot extends IterativeRobot {												// Variable that controls
 	NIVision.ParticleFilterCriteria2 criteria[] = new NIVision.ParticleFilterCriteria2[1];
 	NIVision.ParticleFilterOptions2 filterOptions = new NIVision.ParticleFilterOptions2(0,0,1,1);*/
     
-	   public void robotInit() {												// ...
+	   public void robotInit() {
         
-        leftStick = new Joystick(0);													// Initializes the Joysticks used
-        rightStick = new Joystick(1);													// ...
+        leftStick = new Joystick(0);
+        rightStick = new Joystick(1);
         dual = new Joystick(2);			
         
-        compressor.start();																// START COMPRESSOR
+        compressor.start();
         
         drive = new Drive();
         
@@ -87,7 +86,7 @@ public class Robot extends IterativeRobot {												// Variable that controls
     }
 
     
-    public void autonomousPeriodic() {													// Autonomous period
+    public void autonomousPeriodic() {
     	
     }
 
@@ -102,15 +101,13 @@ public class Robot extends IterativeRobot {												// Variable that controls
         
     }
     
-    public void teleopPeriodic() {														// Teleop Period
-        					// ...
+    public void teleopPeriodic() {
+    	
     	SmartDashboard.putBoolean("Fire Button", dual.getRawButton(2));	
     	
-    	drive.update(-leftStick.getY(), -rightStick.getY());							// Drives using joysticks, and changes transmission if needed
-    	
-    	if(dual.getRawButton(3)){														// Changes transmission if Button 3 is pressed
+    	if(dual.getRawButton(3))
     		drive.transmissionPressed();
-    	}
+    	drive.update(-leftStick.getY(), -rightStick.getY());
     	
     	if(dual.getRawButton(2))
     		shooter.shootPressed();
