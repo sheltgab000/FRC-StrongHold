@@ -12,4 +12,7 @@ public class Ports {
 	public static final int STOP_SWITCH = 0;
 	public static final int SLOW_SWITCH = 1;
 	
+	public static final int SHIFTER_HIGH = 0;
+	public static final int SHIFTER_LOW = 1;
+	
 }
