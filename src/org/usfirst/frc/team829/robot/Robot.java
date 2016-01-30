@@ -9,27 +9,18 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-public class Robot extends IterativeRobot {
-    
-	enum TransmissionStatus{															// The enum that controls the transmission status
-		HIGH,
-		LOW
-	}
-    
+public class Robot extends IterativeRobot {												// Variable that controls the slowing speed
+	
+	
+	Drive drive;														// Variable that stores the shooter's status
+	
 	Shooter shooter;
 	
-	CANTalon frontLeft, backLeft, frontRight, backRight;								// Motor controllers for the drive			(TALON SRX)
-	
-	DoubleSolenoid transmission;															// Variable that stores the shooter's status
-	
-	TransmissionStatus transmissionStatus;												// Variable that stores the transmission's status
-	
-	Compressor compressor;															// Motor controllers used for the shooter 	(TALON SR)
-	
-	DigitalInput stopped, slowing;														// Limit switches used for the shooter
+	Compressor compressor;																	// Limit switches used for the shooter
 	
 	Joystick dual, leftStick, rightStick;												// Controls being used with the robot
 	
@@ -51,23 +42,17 @@ public class Robot extends IterativeRobot {
 	NIVision.ParticleFilterCriteria2 criteria[] = new NIVision.ParticleFilterCriteria2[1];
 	NIVision.ParticleFilterOptions2 filterOptions = new NIVision.ParticleFilterOptions2(0,0,1,1);*/
     
-	   public void robotInit() {										// Sets the statuses to their default values
-        transmissionStatus = TransmissionStatus.HIGH;									// ...
-        
-        transmission = new DoubleSolenoid(0, 1);													// ...
-        
-        frontLeft = new CANTalon(0);													// Initializes the drive motors
-        backLeft = new CANTalon(1);														// ...
-        frontRight = new CANTalon(2);													// ...
-        backRight = new CANTalon(3);													// ...
+	   public void robotInit() {												// ...
         
         leftStick = new Joystick(0);													// Initializes the Joysticks used
         rightStick = new Joystick(1);													// ...
-        dual = new Joystick(2);		
-        
-        shooter = new Shooter();
+        dual = new Joystick(2);			
         
         compressor.start();																// START COMPRESSOR
+        
+        drive = new Drive();
+        
+        shooter = new Shooter();
         
         /*camera = CameraServer.getInstance();
         camera.setQuality(50);
@@ -119,31 +104,13 @@ public class Robot extends IterativeRobot {
     }
     
     public void teleopPeriodic() {														// Teleop Period
-        
-    	SmartDashboard.putBoolean("Stop Switch", stopped.get());						// SmartDashboard used to view variables
-    	SmartDashboard.putBoolean("slowing Switch", slowing.get());						// ...
-    	SmartDashboard.putBoolean("Fire Button", dual.getRawButton(2));							// ...
+        					// ...
+    	SmartDashboard.putBoolean("Fire Button", dual.getRawButton(2));	
     	
-    	drive(-leftStick.getY(), -rightStick.getY());									// Control the drive using the Joysticks
+    	drive.update(-leftStick.getY(), -rightStick.getY());							// Drives using joysticks, and changes transmission if needed
     	
-    	switch(transmissionStatus){														// Controls the transmission using Button 4
-    	case HIGH:
-    		if(dual.getRawButton(4))
-    			transmissionStatus = TransmissionStatus.LOW;
-    		break;
-    	case LOW:
-    		if(dual.getRawButton(4))
-    			transmissionStatus = TransmissionStatus.HIGH;
-    		break;
-    	}
-    	
-    	switch(transmissionStatus){														// Changes the solenoid depending on transmission status
-    	case HIGH:
-    		transmission.set(DoubleSolenoid.Value.kForward);
-    		break;
-    	case LOW:
-    		transmission.set(DoubleSolenoid.Value.kReverse);
-    		break;
+    	if(dual.getRawButton(3)){														// Changes transmission if Button 3 is pressed
+    		drive.transmissionPressed();
     	}
     	
     	if(dual.getRawButton(2))
@@ -184,13 +151,6 @@ public class Robot extends IterativeRobot {
     
     public void disabledInit(){
     	//NIVision.IMAQdxStopAcquisition(session);
-    }
-    
-    public void drive(double leftSpeed, double rightSpeed){										// Controls the drive speed
-    	frontLeft.set(leftSpeed);
-    	backLeft.set(leftSpeed);
-    	frontRight.set(rightSpeed);
-    	backRight.set(rightSpeed);
     }
     
 }
