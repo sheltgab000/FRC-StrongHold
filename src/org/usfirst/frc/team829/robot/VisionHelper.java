@@ -59,7 +59,7 @@ public class VisionHelper {
     	NIVision.imaqColorThreshold(binaryFrame, frame, 255, NIVision.ColorMode.HSV, HUE_RANGE, SAT_RANGE, VAL_RANGE);
     	
     	criteria[0].lower = (float)PARTICLE_AREA_MIN;
-		imaqError = NIVision.imaqParticleFilter4(binaryFrame, binaryFrame, criteria, filterOptions, null);
+		//imaqError = NIVision.imaqParticleFilter4(binaryFrame, binaryFrame, criteria, filterOptions, null);
     	if(uploadingToServer)
     		CameraServer.getInstance().setImage(binaryFrame);
     	
