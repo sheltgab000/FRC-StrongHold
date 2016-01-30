@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Robot extends IterativeRobot {
-    
+    // blakes annoying
 	private double shootingSpeed = .90;													// Variable that controls the shooter's speed
 	private double slowingSpeed = .20;													// Variable that controls the slowing speed
 	
