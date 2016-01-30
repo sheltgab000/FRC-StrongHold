@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.RobotDrive;
 
 public class Drive {
 
-	// Fields: Integers and variables necessary for the methods inside of the class to work.
+	// Fields: Integers and variables necessary for the methods inside of the class to work
 	int transmissionStatus;
 	final int HIGH = 0;
 	final int LOW = 1;
