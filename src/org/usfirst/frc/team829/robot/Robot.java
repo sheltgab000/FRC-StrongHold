@@ -18,24 +18,15 @@ public class Robot extends IterativeRobot {
 	private double shootingSpeed = .90;													// Variable that controls the shooter's speed
 	private double slowingSpeed = .20;													// Variable that controls the slowing speed
 	
-	enum TransmissionStatus{															// The enum that controls the transmission status
-		HIGH,
-		LOW
-	}
-	
 	enum ShooterStatus{																	// The enum that controls the shooter status
 		SHOOTING,
 		SLOWING,
 		STOPPED
 	}
-    
-	CANTalon frontLeft, backLeft, frontRight, backRight;								// Motor controllers for the drive			(TALON SRX)
 	
-	DoubleSolenoid transmission;														// Solenoid used in the transmission shift
+	Drive drive;
 	
 	ShooterStatus shooterStatus;														// Variable that stores the shooter's status
-	
-	TransmissionStatus transmissionStatus;												// Variable that stores the transmission's status
 	
 	Compressor compressor;																// The compressor
 	
@@ -65,20 +56,12 @@ public class Robot extends IterativeRobot {
     
 	   public void robotInit() {
         shooterStatus = ShooterStatus.STOPPED;											// Sets the statuses to their default values
-        transmissionStatus = TransmissionStatus.HIGH;									// ...
-        
-        transmission = new DoubleSolenoid(0, 1);										// Initializes the transmission Solenoid
         
         shooter1 = new Talon(0);														// Initializes the shooter motors
         shooter2 = new Talon(1);														// ...
         
         stopped = new DigitalInput(0);													// Initializes the limit switches
         slowing = new DigitalInput(1);													// ...
-        
-        frontLeft = new CANTalon(0);													// Initializes the drive motors
-        backLeft = new CANTalon(1);														// ...
-        frontRight = new CANTalon(2);													// ...
-        backRight = new CANTalon(3);													// ...
         
         leftStick = new Joystick(0);													// Initializes the Joysticks used
         rightStick = new Joystick(1);													// ...
@@ -88,6 +71,8 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("slowing speed", slowingSpeed);						// ...
         
         compressor.start();																// START COMPRESSOR
+        
+        drive = new Drive();
         
         /*camera = CameraServer.getInstance();
         camera.setQuality(50);
@@ -149,26 +134,10 @@ public class Robot extends IterativeRobot {
     	shootingSpeed = SmartDashboard.getNumber("shooting speed");						// ...
     	slowingSpeed = SmartDashboard.getNumber("slowing speed");						// ...
     	
-    	drive(-leftStick.getY(), -rightStick.getY());									// Control the drive using the Joysticks
+    	drive.update(-leftStick.getY(), -rightStick.getY());							// Drives using joysticks, and changes transmission if needed
     	
-    	switch(transmissionStatus){														// Controls the transmission using Button 4
-    	case HIGH:
-    		if(dual.getRawButton(4))
-    			transmissionStatus = TransmissionStatus.LOW;
-    		break;
-    	case LOW:
-    		if(dual.getRawButton(4))
-    			transmissionStatus = TransmissionStatus.HIGH;
-    		break;
-    	}
-    	
-    	switch(transmissionStatus){														// Changes the solenoid depending on transmission status
-    	case HIGH:
-    		transmission.set(DoubleSolenoid.Value.kForward);
-    		break;
-    	case LOW:
-    		transmission.set(DoubleSolenoid.Value.kReverse);
-    		break;
+    	if(dual.getRawButton(3)){														// Changes transmission if Button 3 is pressed
+    		drive.transmissionPressed();
     	}
     	
     	switch(shooterStatus){															// Changes the shooter using Button 2 and the limit switches
@@ -238,13 +207,6 @@ public class Robot extends IterativeRobot {
     
     public void disabledInit(){
     	//NIVision.IMAQdxStopAcquisition(session);
-    }
-    
-    public void drive(double leftSpeed, double rightSpeed){										// Controls the drive speed
-    	frontLeft.set(leftSpeed);
-    	backLeft.set(leftSpeed);
-    	frontRight.set(rightSpeed);
-    	backRight.set(rightSpeed);
     }
     
 }
