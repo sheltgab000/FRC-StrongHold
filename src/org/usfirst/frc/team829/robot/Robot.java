@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
     
-	private double shootingSpeed = .90;
+	private double shootingSpeed = .80;
 	private double slowingSpeed = .20;
 	
 	enum ShooterStatus{
@@ -55,13 +55,13 @@ public class Robot extends IterativeRobot {
 	   public void robotInit() {
         shooterStatus = ShooterStatus.STOPPED;
         
-        shooter1 = new Talon(0);
-        shooter2 = new Talon(1);
+        shooter1 = new Talon(1);
+        shooter2 = new Talon(0);
         
-        stopped = new DigitalInput(0);
-        slowing = new DigitalInput(1);
+        stopped = new DigitalInput(1);
+        slowing = new DigitalInput(0);
         
-        dual = new Joystick(2);
+        dual = new Joystick(1);
         SmartDashboard.putNumber("shooting speed", shootingSpeed);
         SmartDashboard.putNumber("slowing speed", slowingSpeed);
         
