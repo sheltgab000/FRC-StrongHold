@@ -13,9 +13,8 @@ public class DriveCommand extends AutoCommand{
 	
 	// TODO link drive to this class 
 	@Override
-	public void update() {
-		//drive
-		
+	public void update(SubSystem system) {
+		((Drive) system).update(leftSpeed, rightSpeed);
 	}
 
 	@Override

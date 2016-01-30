@@ -3,7 +3,7 @@ package org.usfirst.frc.team829.robot;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.RobotDrive;
 
-public class Drive {
+public class Drive extends SubSystem{
 
 	// Fields: Integers and variables necessary for the methods inside of the class to work
 	int transmissionStatus;

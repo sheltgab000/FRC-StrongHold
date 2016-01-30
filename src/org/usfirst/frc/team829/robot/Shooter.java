@@ -3,7 +3,7 @@ package org.usfirst.frc.team829.robot;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
 
-public class Shooter {
+public class Shooter extends SubSystem{
 
 	private final double SHOOTING_SPEED = .90;	//speed for shooting
 	private final double SLOWWING_SPEED = .20;	//speed for slowing the shooter down
