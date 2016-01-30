@@ -4,7 +4,9 @@ package org.usfirst.frc.team829.robot;
 import com.ni.vision.NIVision;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Talon;
@@ -13,34 +15,45 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
     
-	private double shootingSpeed = .90;
-	private double slowingSpeed = .20;
+	private double shootingSpeed = .90;													// Variable that controls the shooter's speed
+	private double slowingSpeed = .20;													// Variable that controls the slowing speed
 	
-	enum ShooterStatus{
+	enum TransmissionStatus{															// The enum that controls the transmission status
+		HIGH,
+		LOW
+	}
+	
+	enum ShooterStatus{																	// The enum that controls the shooter status
 		SHOOTING,
 		SLOWING,
 		STOPPED
 	}
     
-	CANTalon frontLeft, backLeft, frontRight, backRight;
+	CANTalon frontLeft, backLeft, frontRight, backRight;								// Motor controllers for the drive			(TALON SRX)
 	
-	ShooterStatus shooterStatus;
+	DoubleSolenoid transmission;														// Solenoid used in the transmission shift
 	
-	Talon shooter1, shooter2;
+	ShooterStatus shooterStatus;														// Variable that stores the shooter's status
 	
-	DigitalInput stopped, slowing;
+	TransmissionStatus transmissionStatus;												// Variable that stores the transmission's status
 	
-	Joystick dual, leftStick, rightStick;
+	Compressor compressor;																// The compressor
+	
+	Talon shooter1, shooter2;															// Motor controllers used for the shooter 	(TALON SR)
+	
+	DigitalInput stopped, slowing;														// Limit switches used for the shooter
+	
+	Joystick dual, leftStick, rightStick;												// Controls being used with the robot
 	
 	//CameraServer camera;
 	
-	int session;
+	int session;																		// Used for vision or something
 	
-	VisionHelper visionHelper;
+	VisionHelper visionHelper;															// Used for vision or something
 	
-	NIVision.Range TOTE_HUE_RANGE = new NIVision.Range(100, 155);	//Default hue range for yellow tote
-	NIVision.Range TOTE_SAT_RANGE = new NIVision.Range(67, 255);	//Default saturation range for yellow tote
-	NIVision.Range TOTE_VAL_RANGE = new NIVision.Range(200, 255);	//Default value range for yellow tote
+	NIVision.Range TOTE_HUE_RANGE = new NIVision.Range(100, 155);						//Default hue range for yellow tote
+	NIVision.Range TOTE_SAT_RANGE = new NIVision.Range(67, 255);						//Default saturation range for yellow tote
+	NIVision.Range TOTE_VAL_RANGE = new NIVision.Range(200, 255);						//Default value range for yellow tote
 	
 	/*double AREA_MINIMUM = 0.5; //Default Area minimum for particle as a percentage of total image area
 
@@ -51,24 +64,30 @@ public class Robot extends IterativeRobot {
 	NIVision.ParticleFilterOptions2 filterOptions = new NIVision.ParticleFilterOptions2(0,0,1,1);*/
     
 	   public void robotInit() {
-        shooterStatus = ShooterStatus.STOPPED;
+        shooterStatus = ShooterStatus.STOPPED;											// Sets the statuses to their default values
+        transmissionStatus = TransmissionStatus.HIGH;									// ...
         
-        shooter1 = new Talon(0);
-        shooter2 = new Talon(1);
+        transmission = new DoubleSolenoid(0, 1);										// Initializes the transmission Solenoid
         
-        stopped = new DigitalInput(0);
-        slowing = new DigitalInput(1);
+        shooter1 = new Talon(0);														// Initializes the shooter motors
+        shooter2 = new Talon(1);														// ...
         
-        frontLeft = new CANTalon(0);
-        backLeft = new CANTalon(1);
-        frontRight = new CANTalon(2);
-        backRight = new CANTalon(3);
+        stopped = new DigitalInput(0);													// Initializes the limit switches
+        slowing = new DigitalInput(1);													// ...
         
-        leftStick = new Joystick(0);
-        rightStick = new Joystick(1);
-        dual = new Joystick(2);
-        SmartDashboard.putNumber("shooting speed", shootingSpeed);
-        SmartDashboard.putNumber("slowing speed", slowingSpeed);
+        frontLeft = new CANTalon(0);													// Initializes the drive motors
+        backLeft = new CANTalon(1);														// ...
+        frontRight = new CANTalon(2);													// ...
+        backRight = new CANTalon(3);													// ...
+        
+        leftStick = new Joystick(0);													// Initializes the Joysticks used
+        rightStick = new Joystick(1);													// ...
+        dual = new Joystick(2);															// ...
+        
+        SmartDashboard.putNumber("shooting speed", shootingSpeed);						// SmartDashboard variables						
+        SmartDashboard.putNumber("slowing speed", slowingSpeed);						// ...
+        
+        compressor.start();																// START COMPRESSOR
         
         /*camera = CameraServer.getInstance();
         camera.setQuality(50);
@@ -104,7 +123,7 @@ public class Robot extends IterativeRobot {
     }
 
     
-    public void autonomousPeriodic() {
+    public void autonomousPeriodic() {													// Autonomous period
     	
     }
 
@@ -119,20 +138,40 @@ public class Robot extends IterativeRobot {
         
     }
     
-    public void teleopPeriodic() {
+    public void teleopPeriodic() {														// Teleop Period
         
-    	SmartDashboard.putBoolean("Stop Switch", stopped.get());
-    	SmartDashboard.putBoolean("slowing Switch", slowing.get());
-    	SmartDashboard.putBoolean("Fire Button", dual.getRawButton(2));
-    	SmartDashboard.putNumber("shooterMotor1", shooter2.get());
-    	SmartDashboard.putNumber("shooterMotor2", shooter1.get());
+    	SmartDashboard.putBoolean("Stop Switch", stopped.get());						// SmartDashboard used to view variables
+    	SmartDashboard.putBoolean("slowing Switch", slowing.get());						// ...
+    	SmartDashboard.putBoolean("Fire Button", dual.getRawButton(2));					// ...
+    	SmartDashboard.putNumber("shooterMotor1", shooter2.get());						// ...
+    	SmartDashboard.putNumber("shooterMotor2", shooter1.get());						// ...
     	
-    	shootingSpeed = SmartDashboard.getNumber("shooting speed");
-    	slowingSpeed = SmartDashboard.getNumber("slowing speed");
+    	shootingSpeed = SmartDashboard.getNumber("shooting speed");						// ...
+    	slowingSpeed = SmartDashboard.getNumber("slowing speed");						// ...
     	
-    	drive(-leftStick.getY(), -rightStick.getY());
+    	drive(-leftStick.getY(), -rightStick.getY());									// Control the drive using the Joysticks
     	
-    	switch(shooterStatus){
+    	switch(transmissionStatus){														// Controls the transmission using Button 4
+    	case HIGH:
+    		if(dual.getRawButton(4))
+    			transmissionStatus = TransmissionStatus.LOW;
+    		break;
+    	case LOW:
+    		if(dual.getRawButton(4))
+    			transmissionStatus = TransmissionStatus.HIGH;
+    		break;
+    	}
+    	
+    	switch(transmissionStatus){														// Changes the solenoid depending on transmission status
+    	case HIGH:
+    		transmission.set(DoubleSolenoid.Value.kForward);
+    		break;
+    	case LOW:
+    		transmission.set(DoubleSolenoid.Value.kReverse);
+    		break;
+    	}
+    	
+    	switch(shooterStatus){															// Changes the shooter using Button 2 and the limit switches
     	case STOPPED :
     		if(dual.getRawButton(2))
     			shooterStatus = ShooterStatus.SHOOTING;
@@ -149,7 +188,7 @@ public class Robot extends IterativeRobot {
     	}
     	
     	
-    	switch(shooterStatus){
+    	switch(shooterStatus){															// Changes the shooter status depending on the SHOOTER STATUS
     	case STOPPED :
     		shooter1.set(0);
     		shooter2.set(0);
@@ -201,7 +240,7 @@ public class Robot extends IterativeRobot {
     	//NIVision.IMAQdxStopAcquisition(session);
     }
     
-    public void drive(double leftSpeed, double rightSpeed){
+    public void drive(double leftSpeed, double rightSpeed){										// Controls the drive speed
     	frontLeft.set(leftSpeed);
     	backLeft.set(leftSpeed);
     	frontRight.set(rightSpeed);
