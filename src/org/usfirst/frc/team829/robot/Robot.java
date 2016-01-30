@@ -2,7 +2,6 @@
 package org.usfirst.frc.team829.robot;
 
 import com.ni.vision.NIVision;
-
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
