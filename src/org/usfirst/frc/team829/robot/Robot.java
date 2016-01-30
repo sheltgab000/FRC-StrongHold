@@ -2,12 +2,8 @@
 package org.usfirst.frc.team829.robot;
 
 import com.ni.vision.NIVision;
-import com.ni.vision.NIVision.DrawMode;
-import com.ni.vision.NIVision.Image;
-import com.ni.vision.NIVision.ImageType;
-import com.ni.vision.NIVision.ShapeMode;
 
-import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
@@ -17,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
     
-	private double shootingSpeed = .80;
+	private double shootingSpeed = .90;
 	private double slowingSpeed = .20;
 	
 	enum ShooterStatus{
@@ -26,13 +22,15 @@ public class Robot extends IterativeRobot {
 		STOPPED
 	}
     
+	CANTalon frontLeft, backLeft, frontRight, backRight;
+	
 	ShooterStatus shooterStatus;
 	
 	Talon shooter1, shooter2;
 	
 	DigitalInput stopped, slowing;
 	
-	Joystick dual;
+	Joystick dual, leftStick, rightStick;
 	
 	//CameraServer camera;
 	
@@ -55,13 +53,20 @@ public class Robot extends IterativeRobot {
 	   public void robotInit() {
         shooterStatus = ShooterStatus.STOPPED;
         
-        shooter1 = new Talon(1);
-        shooter2 = new Talon(0);
+        shooter1 = new Talon(0);
+        shooter2 = new Talon(1);
         
-        stopped = new DigitalInput(1);
-        slowing = new DigitalInput(0);
+        stopped = new DigitalInput(0);
+        slowing = new DigitalInput(1);
         
-        dual = new Joystick(1);
+        frontLeft = new CANTalon(0);
+        backLeft = new CANTalon(1);
+        frontRight = new CANTalon(2);
+        backRight = new CANTalon(3);
+        
+        leftStick = new Joystick(0);
+        rightStick = new Joystick(1);
+        dual = new Joystick(2);
         SmartDashboard.putNumber("shooting speed", shootingSpeed);
         SmartDashboard.putNumber("slowing speed", slowingSpeed);
         
@@ -124,6 +129,8 @@ public class Robot extends IterativeRobot {
     	
     	shootingSpeed = SmartDashboard.getNumber("shooting speed");
     	slowingSpeed = SmartDashboard.getNumber("slowing speed");
+    	
+    	drive(-leftStick.getY(), -rightStick.getY());
     	
     	switch(shooterStatus){
     	case STOPPED :
@@ -192,6 +199,13 @@ public class Robot extends IterativeRobot {
     
     public void disabledInit(){
     	//NIVision.IMAQdxStopAcquisition(session);
+    }
+    
+    public void drive(double leftSpeed, double rightSpeed){
+    	frontLeft.set(leftSpeed);
+    	backLeft.set(leftSpeed);
+    	frontRight.set(rightSpeed);
+    	backRight.set(rightSpeed);
     }
     
 }
