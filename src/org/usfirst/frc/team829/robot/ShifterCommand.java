@@ -8,23 +8,28 @@ public class ShifterCommand extends AutoCommand{
 	
 	int targetShifterStatus;
 	
+	Drive drive;
+	
 	public ShifterCommand(int targetShifterStatus){
 		this.targetShifterStatus = targetShifterStatus;
+		drive = new Drive();
 	}
 	
 	@Override
 	public void update(){
 		if(targetShifterStatus ==  HIGH){
-			// shift outward
+			drive.transmissionStatus = HIGH;
+			drive.update(0, 0);
 		}
 		else{
-			// shift inward
+			drive.transmissionStatus = LOW;
+			drive.update(0, 0);
 		}
 	}
 	
 	@Override
 	public boolean isComplete(){
-		// Set shifterStatus to the current status
+		shifterStatus = drive.transmissionStatus;
 		
 		if(shifterStatus == targetShifterStatus)
 			return true;
