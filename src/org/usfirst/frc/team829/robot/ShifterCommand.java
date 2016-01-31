@@ -8,15 +8,13 @@ public class ShifterCommand extends AutoCommand{
 	
 	int targetShifterStatus;
 	
-	Drive drive;
-	
 	public ShifterCommand(int targetShifterStatus){
 		this.targetShifterStatus = targetShifterStatus;
-		drive = new Drive();
 	}
 	
 	@Override
 	public void update(){
+		Drive drive = Robot.getDrive();
 		if(targetShifterStatus ==  HIGH){
 			drive.transmissionStatus = HIGH;
 			drive.update(0, 0);
@@ -29,6 +27,7 @@ public class ShifterCommand extends AutoCommand{
 	
 	@Override
 	public boolean isComplete(){
+		Drive drive = Robot.getDrive();
 		shifterStatus = drive.transmissionStatus;
 		
 		if(shifterStatus == targetShifterStatus)

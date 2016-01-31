@@ -9,8 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {		// Variable that controls the slowing speed
 	
-	
-	Drive drive;		// Variable that stores the shooter's status
+	static Drive drive;		// Variable that stores the shooter's status
 	
 	Shooter shooter;
 	
@@ -82,6 +81,10 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     
     public void disabledInit(){
     	
+    }
+    
+    public static Drive getDrive(){
+    	return drive;
     }
     
 }

@@ -11,11 +11,10 @@ public class DriveCommand extends AutoCommand{
 		this.targetDeltaCount = targetDeltaCount;
 	}
 	
-	// TODO link drive to this class 
 	@Override
 	public void update() {
-		//drive
-		
+		Drive drive = Robot.getDrive();
+		drive.update(leftSpeed, rightSpeed);
 	}
 
 	@Override
