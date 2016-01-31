@@ -11,7 +11,7 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	
 	static Drive drive;		// Variable that stores the shooter's status
 	
-	Shooter shooter;
+	static Shooter shooter;
 	
 	Compressor compressor;		// Limit switches used for the shooter
 	
@@ -85,6 +85,10 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     
     public static Drive getDrive(){
     	return drive;
+    }
+    
+    public static Shooter getShooter(){
+    	return shooter;
     }
     
 }

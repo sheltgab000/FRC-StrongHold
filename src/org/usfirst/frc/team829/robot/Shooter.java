@@ -87,6 +87,10 @@ public class Shooter {
 			
 	}
 	
+	public int getStatus(){
+		return shooterStatus;
+	}
+	
 	/*
 	 * Used to set the motors to a passed speed
 	 */
