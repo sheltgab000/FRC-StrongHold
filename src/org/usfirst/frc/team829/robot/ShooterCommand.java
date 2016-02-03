@@ -18,7 +18,7 @@ public class ShooterCommand extends AutoCommand{
 	public boolean isComplete(){
 		Shooter shooter = Robot.getShooter();
 		
-		if(shooter.getStatus() == STOPPED)
+		if(shooter.getShooterStatus() == STOPPED)
 			return true;
 		else
 			return false;

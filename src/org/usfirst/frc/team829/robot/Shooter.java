@@ -1,101 +1,115 @@
 package org.usfirst.frc.team829.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Talon;
 
 public class Shooter {
-
-	private final double SHOOTING_SPEED = .90;	//speed for shooting
-	private final double SLOWWING_SPEED = .20;	//speed for slowing the shooter down
-	private final double STOPPED_SPEED = 0;		//speed for the stopped 0 duh
 	
-	/*
-	 * Shooter Mode Flow
-	 * 
-	 *		    Stopped
-	 * 			  \/
-	 * When shoot button is pressed 
-	 * 			  \/
-	 * 		   Shooting
-	 * 			  \/
-	 * when switch to slow down is hit
-	 * 			  \/
-	 * 		    SLOWING
-	 * 			  \/
-	 * when the switch to stop is hit
-	 * 			  \/
-	 * 			STOPPED
-	 */
+	// Fields
+	private final double shootSpeed = 0.90;	// Variables for when shooting
+	private final double slowSpeed = 0.20;	// slowing
+	private final double stopSpeed = 0;		// or stopping
 	
-	private int shooterStatus;			//tracks the mode of the shooter
-	private final int STOPPED = 0;		//when the shooter is stopped and waiting to shoot
-	private final int SHOOTING = 1;		//when the shooter is shooting and waiting to slow
-	private final int SLOWING = 2;		//when the shooter is slowing and waiting to stop
+	private final double OUT_COUNT = 57;	// Variables for encoder counts
+	private final double IN_COUNT = 0;		// ...
 	
+	private boolean initialized;	// Boolean that keeps track of whether it has been initialized or not
 	
-	private DigitalInput stopped, slowing;		//switches to stop and slow down
-	private Talon shooter1, shooter2;			//shooter motors
+	private int shooterStatus;		// Variable that stores shooter's status
+	private final int STOPPED = 0;	// stopped
+	private final int SHOOTING = 1;	// shooting
+	private final int SLOWING = 2;	// slowing
 	
-	public Shooter(){
-		shooter1 = new Talon(Ports.SHOOTER_1);	//motors are set to ports from the Ports.java file
-		shooter2 = new Talon(Ports.SHOOTER_2);	//...
+	private int dartStatus;		// Variable that stores dart's status
+	private final int OUT = 1;	// out
+	private final int IN = 0;	// in
+	
+	DigitalInput stopSwitch, slowSwitch, travelSwitch, dartHome;	// Limit switches
+	
+	Encoder dartEncoder;	// Encoder
+	
+	Talon shooter1, shooter2, dartMotor;	// Motors for shooter and dart
+	
+	// Constructor
+	public Shooter(){	// Set's everything to it's default value
+		stopSwitch = new DigitalInput(Ports.STOP_SWITCH);
+		slowSwitch = new DigitalInput(Ports.SLOW_SWITCH);
+		travelSwitch = new DigitalInput(Ports.TRAVEL_SWITCH);
+		dartHome = new DigitalInput(Ports.DART_HOME);
 		
-		stopped = new DigitalInput(Ports.STOP_SWITCH);	//switches to slow and stop are set to ports from Ports.java file
-		slowing = new DigitalInput(Ports.SLOW_SWITCH);	//...
+		dartEncoder = new Encoder(Ports.DART_ENCODER_1, Ports.DART_ENCODER_2);
 		
-		shooterStatus = STOPPED;	//initializes the status to stopped
+		shooter1 = new Talon(Ports.SHOOTER_1);
+		shooter2 = new Talon(Ports.SHOOTER_2);
+		dartMotor = new Talon(Ports.DART_MOTOR);
+		
+		initialized = false;
+		
+		shooterStatus = STOPPED;
+		dartStatus = IN;
 	}
 	
-	/*
-	 * This is called to enter shooting mode from the main Robot class
-	 * It should be called when the shoot button on the controller is pressed
-	 */
 	public void shootPressed(){
 		if(shooterStatus == STOPPED)
 			shooterStatus = SHOOTING;
 	}
 	
-	
 	public void update(){
 		
-		/*
-		 * Updates the mode of the shooter and sets the speeds based on the mode
-		 */
-		switch(shooterStatus){
-		case SHOOTING:
-			//set motors at speed to shoot
-			shoot(SHOOTING_SPEED);
+		if(initialized){
+			if(shooterStatus == STOPPED){
+				shoot(stopSpeed);
+			}
+			else if(shooterStatus == SHOOTING){
+				if(slowSwitch.get()){
+					shooterStatus = SLOWING;
+				}
+				else{
+					shoot(shootSpeed);
+				}
+			}
+			else{
+				if(stopSwitch.get()){
+					shooterStatus = STOPPED;
+				}
+				else{
+					shoot(slowSpeed);
+				}
+			}
 			
-			//exit shooting mode if shooter has hit stop position
-			if(slowing.get())				
-				shooterStatus = SLOWING;
-			break;
-			
-		case SLOWING:
-			//set the motors to speed for slowing down
-			shoot(SLOWWING_SPEED);
-			
-			//exit slowing mode and stop if shooter has hit the home stop switch
-			if(stopped.get())
-				shooterStatus = STOPPED;
-			break;
-			
-		case STOPPED:
-			//set motor speed to 0
-			shoot(STOPPED_SPEED);
+			if(dartStatus == OUT){
+				while(dartEncoder.get() != OUT_COUNT)
+					dartMotor.set(-1);
+			}
+			else{
+				while(dartEncoder.get() != IN_COUNT)
+					dartMotor.set(1);
+			}
 		}
-			
+		else{
+			if(dartHome.get() == true){
+				dartEncoder.reset();
+				initialized = true;
+			}
+			else{
+				dartMotor.set(-1);
+			}
+		}
+		
 	}
 	
-	public int getStatus(){
+	public int getShooterStatus(){
 		return shooterStatus;
 	}
 	
-	/*
-	 * Used to set the motors to a passed speed
-	 */
-	private void shoot(double speed){
+	public int getDartStatus(){
+		return dartStatus;
+	}
+	
+	public void shoot(double speed){
 		shooter1.set(speed);
 		shooter2.set(speed);
 	}
+	
 }
