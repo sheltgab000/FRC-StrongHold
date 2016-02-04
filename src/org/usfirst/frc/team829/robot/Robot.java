@@ -9,10 +9,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {		// Variable that controls the slowing speed
 	
+	static Drive drive;		// Variable that stores the shooter's status
 	
-	Drive drive;		// Variable that stores the shooter's status
-	
-	Shooter shooter;
+	static Shooter shooter;
 	
 	Compressor compressor;		// Limit switches used for the shooter
 	
@@ -21,9 +20,9 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	VisionHelper visionHelper;
 	   public void robotInit() {	
 		   
-	       leftStick = new Joystick(0);		// Initializes the Joysticks used
-	       rightStick = new Joystick(1);	// ...
-	       dual = new Joystick(2);			
+	       leftStick = new Joystick(Controller.LEFT_STICK);		// Initializes the Joysticks used
+	       rightStick = new Joystick(Controller.RIGHT_STICK);	// ...
+	       dual = new Joystick(Controller.DUAL);			
 	       
 	       Compressor compressor = new Compressor();	//set up the compressor
 	       compressor.start();							// START COMPRESSOR
@@ -60,19 +59,18 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     
     public void teleopPeriodic() {			// Teleop Period
         					
-    	SmartDashboard.putBoolean("Fire Button", dual.getRawButton(2));	
+    	SmartDashboard.putBoolean("Fire Button", dual.getRawButton(Controller.FIRE_BUTTON));	
     	
     	drive.update(-leftStick.getY(), -rightStick.getY());	// Drives using joysticks, and changes transmission if needed
     	
-    	if(dual.getRawButton(3)){		// Changes transmission if Button 3 is pressed
+    	if(dual.getRawButton(Controller.TRANSMISSION_BUTTON)){		// Changes transmission if Button 3 is pressed
     		drive.transmissionPressed();
     	}
     	
-    	if(dual.getRawButton(2))
-    		shooter.shootPressed();
     	shooter.update();
     	
-    	
+    	if(dual.getRawButton(Controller.FIRE_BUTTON))
+    		shooter.shootPressed();	
     	
     }
     
@@ -83,6 +81,14 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     
     public void disabledInit(){
     	
+    }
+    
+    public static Drive getDrive(){
+    	return drive;
+    }
+    
+    public static Shooter getShooter(){
+    	return shooter;
     }
     
 }
