@@ -85,6 +85,13 @@ public class Intake {
 			loadingState = LOADING;
 	}
 	
+	public void setPivotSpeed(double speed){
+		pivot.set(speed);
+	}
+	
+	public void setRollerSpeed(double speed){
+		roller.set(speed);
+	}
 	
 	public boolean goToPos(int target){
 		if(target == currentPos){
