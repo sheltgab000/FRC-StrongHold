@@ -6,38 +6,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
-<<<<<<< HEAD
-public class Robot extends IterativeRobot {
-    // blakes annoying
-	private double shootingSpeed = .90;													// Variable that controls the shooter's speed
-	private double slowingSpeed = .20;													// Variable that controls the slowing speed
-	
-	enum TransmissionStatus{															// The enum that controls the transmission status
-		HIGH,
-		LOW
-	}
-	
-	enum ShooterStatus{																	// The enum that controls the shooter status
-		SHOOTING,
-		SLOWING,
-		STOPPED
-	}
-    
-	CANTalon frontLeft, backLeft, frontRight, backRight;								// Motor controllers for the drive			(TALON SRX)
-	
-	DoubleSolenoid transmission;														// Solenoid used in the transmission shift
-	
-	ShooterStatus shooterStatus;														// Variable that stores the shooter's status
-	
-	TransmissionStatus transmissionStatus;												// Variable that stores the transmission's status
-	
-	Compressor compressor;																// The compressor
-	
-	Talon shooter1, shooter2;															// Motor controllers used for the shooter 	(TALON SR)
-=======
 public class Robot extends IterativeRobot {		// Variable that controls the slowing speed
->>>>>>> 749db40c1218f25c38848bf732fd3224363b04b4
 	
 	static Drive drive;		// Variable that stores the shooter's status
 	
@@ -61,7 +30,6 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	       
 	       shooter = new Shooter();
 	       
-	
 	       visionHelper = new VisionHelper();
 	       visionHelper.setHueRange(100, 155);
 	       visionHelper.setSatRange(67, 255);
