@@ -50,15 +50,18 @@ public class Shooter {
 		dartStatus = IN;
 	}
 	
-	public void shootPressed(){
+	public void shootPressed(){	// Change status when button pressed
 		if(shooterStatus == STOPPED)
 			shooterStatus = SHOOTING;
 	}
 	
+	public void dartUpPressed(){
+	}
+	
 	public void update(){
 		
-		if(initialized){
-			if(shooterStatus == STOPPED){
+		if(initialized){	// Init if it hasn't been initialised
+			if(shooterStatus == STOPPED){	// Update shooter according to status
 				shoot(stopSpeed);
 			}
 			else if(shooterStatus == SHOOTING){
@@ -78,7 +81,8 @@ public class Shooter {
 				}
 			}
 			
-			if(dartStatus == OUT){
+			//TODO Make it so the following code doesn't trap the code in a loop
+			if(dartStatus == OUT){	// Update DART accordingly
 				while(dartEncoder.get() != OUT_COUNT)
 					dartMotor.set(-1);
 			}
@@ -93,7 +97,7 @@ public class Shooter {
 				initialized = true;
 			}
 			else{
-				dartMotor.set(-1);
+				dartMotor.set(-1);	//TODO a bit fast? Maybe
 			}
 		}
 		

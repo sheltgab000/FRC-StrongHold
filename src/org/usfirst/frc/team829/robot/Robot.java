@@ -4,6 +4,7 @@ package org.usfirst.frc.team829.robot;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -13,12 +14,16 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	
 	static Shooter shooter;
 	
+	Ultrasonic ultra;
+	double range;
+	
 	Compressor compressor;		// Limit switches used for the shooter
 	
 	Joystick dual, leftStick, rightStick;	// Controls being used with the robot
 	
 	VisionHelper visionHelper;
-	   public void robotInit() {	
+	
+	public void robotInit() {	
 		   
 	       leftStick = new Joystick(Controller.LEFT_STICK);		// Initializes the Joysticks used
 	       rightStick = new Joystick(Controller.RIGHT_STICK);	// ...
@@ -31,6 +36,8 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	       
 	       shooter = new Shooter();
 	       
+	       ultra = new Ultrasonic(Ports.RANGEFINDER_OUTPUT, Ports.RANGEFINDER_INPUT);
+	       ultra.setAutomaticMode(true);
 	
 	       visionHelper = new VisionHelper();
 	       visionHelper.setHueRange(100, 155);
@@ -69,8 +76,7 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     	
     	shooter.update();
     	
-    	if(dual.getRawButton(Controller.FIRE_BUTTON))
-    		shooter.shootPressed();	
+    	range = ultra.getRangeInches();
     	
     }
     
