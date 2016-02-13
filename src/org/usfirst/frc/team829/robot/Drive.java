@@ -51,6 +51,9 @@ public class Drive extends SubSystem{
 		SmartDashboard.putNumber("CurrentTime", startTime);
 		SmartDashboard.putNumber("state", transmissionStatus);
 		
+		SmartDashboard.putNumber("Left Encoder:", backLeft.getEncPosition());
+		SmartDashboard.putNumber("Right Encoder", backRight.getEncPosition());
+		
 		backLeft.set(-leftSpeed);
 		backRight.set(rightSpeed);
 		frontLeft.set(-leftSpeed);

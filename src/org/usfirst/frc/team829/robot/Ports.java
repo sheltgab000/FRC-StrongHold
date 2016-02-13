@@ -10,8 +10,7 @@ public class Ports {
 	public static final int SHOOTER_2 = 15;
 	public static final int INTAKE_ROLLER = 0;
 	public static final int INTAKE_PIVOT = 1;
-	public static final int DART = 2;
-	
+	public static final int DART_MOTOR = 2;
 	public static final int RANGE_IN = 3;
 	public static final int RANGE_OUT = 4;
 	

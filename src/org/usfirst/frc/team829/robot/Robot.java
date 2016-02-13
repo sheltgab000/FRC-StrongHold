@@ -15,13 +15,13 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	
 	Drive drive;		// Variable that stores the shooter's status
 	
-	Shooter shooter;	//controls the shooter
+	Shooter shooter;
 	
 	//Ultrasonic rangeFinder;
 	
 	//double range; 
 	
-	Intake intake;	//interface to the intake
+	Intake intake;
 	
 	Compressor compressor;		// Limit switches used for the shooter
 	
@@ -29,7 +29,7 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	
 	//VisionHelper visionHelper;
 	
-	
+	AnalogInput pot;
 	
 	   public void robotInit() {	
 		   
@@ -47,8 +47,9 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	      // rangeFinder = new Ultrasonic(Ports.RANGE_OUT, Ports.RANGE_IN);
 	       //Once the range finder was coded the code would not connect to the driver station then "robo rio wsnt" connected 
 	       
-	     // rangeFinder.setAutomaticMode(true);
+	     //  rangeFinder.setAutomaticMode(true);
 	       
+	       pot = new AnalogInput(1);
 	       
 	       /*visionHelper = new VisionHelper();
 	       visionHelper.setHueRange(100, 155);
@@ -77,34 +78,43 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
         
     }
     
-    public void teleopPeriodic() {			// Teleop Period	
+    public void teleopPeriodic() {			// Teleop Period
+        					
+    	SmartDashboard.putBoolean("Fire Button", dual.getRawButton(2));	
     	
     	//range = rangeFinder.getRangeInches(); 
     	
     	drive.update(-leftStick.getY(), -rightStick.getY());	// Drives using joysticks, and changes transmission if needed
     	
-    	if(rightStick.getRawButton(2)){		// If the transmission button is pressed
-    		drive.transmissionPressed();	//send a signal to change the transmission	
+    	SmartDashboard.putNumber("leftStick", leftStick.getY());
+    	SmartDashboard.putNumber("rightStick", rightStick.getY());
+    	
+    	if(rightStick.getRawButton(2)){		// Changes transmission if Button 3 is pressed
+    		drive.transmissionPressed();
     	}
     	
-    	if(dual.getRawButton(2))		//When the shoot button is pressed
-    		shooter.shootPressed();		//tell the shooter that it needs to start shooting
-    	shooter.update();				//update the shooter every iteration
+    	if(dual.getRawButton(2))
+    		shooter.shootPressed();
+    	
+    	shooter.update();
+    	
+    	intake.setPivotSpeed(-dual.getRawAxis(1));
+    	shooter.setDartSpeed(-dual.getRawAxis(3));
     	
     	
-    	intake.setPivotSpeed(dual.getY(Hand.kLeft));	//Test code for intake
-														// 	  -----\/-----
-    	if(dual.getRawButton(4))						// 	  -----\/-----
-    		intake.setRollerSpeed(1);					// 	  -----\/-----
-    	else if(dual.getRawButton(2))					// 	  -----\/-----
-    		intake.setRollerSpeed(.5);					// 	  -----\/-----
-    	else if (dual.getRawButton(1))					// 	  -----\/-----
-    		intake.setRollerSpeed(-.5);					// 	  -----\/-----
-    	else if(dual.getRawButton(3))					// 	  -----\/-----
-    		intake.setRollerSpeed(-1);					// 	  -----\/-----
-    	else											// 	  -----\/-----
-    		intake.setRollerSpeed(0);					//	  -----\/-----
     	
+    	if(dual.getRawButton(4))
+    		intake.setRollerSpeed(1);
+    	else if(dual.getRawButton(2))
+    		intake.setRollerSpeed(.5);
+    	else if (dual.getRawButton(1))
+    		intake.setRollerSpeed(-.5);
+    	else if(dual.getRawButton(3))
+    		intake.setRollerSpeed(-1);
+    	else
+    		intake.setRollerSpeed(0);
+    	
+    	SmartDashboard.putNumber("pot", pot.getValue());
     }
     
     
