@@ -11,8 +11,8 @@ public class Shooter {
 	private final double slowSpeed = 0.20;	// slowing
 	private final double stopSpeed = 0;		// or stopping
 	
-	private final double OUT_COUNT = 57;	// Variables for encoder counts
-	private final double IN_COUNT = 0;		// ...
+	// private final double OUT_COUNT = 57;	// Variables for encoder counts
+	// private final double IN_COUNT = 0;		// ...
 	
 	private boolean initialized;	// Boolean that keeps track of whether it has been initialized or not
 	
@@ -22,8 +22,8 @@ public class Shooter {
 	private final int SLOWING = 2;	// slowing
 	
 	private int dartStatus;		// Variable that stores dart's status
-	private final int OUT = 1;	// out
-	private final int IN = 0;	// in
+	// private final int OUT = 1;	// out
+	// private final int IN = 0;	// in
 	
 	DigitalInput stopSwitch, slowSwitch, travelSwitch, dartHome;	// Limit switches
 	
@@ -35,10 +35,10 @@ public class Shooter {
 	public Shooter(){	// Set's everything to it's default value
 		stopSwitch = new DigitalInput(Ports.STOP_SWITCH);
 		slowSwitch = new DigitalInput(Ports.SLOW_SWITCH);
-		travelSwitch = new DigitalInput(Ports.TRAVEL_SWITCH);
-		dartHome = new DigitalInput(Ports.DART_HOME);
+		// travelSwitch = new DigitalInput(Ports.TRAVEL_SWITCH);
+		// dartHome = new DigitalInput(Ports.DART_HOME);
 		
-		dartEncoder = new Encoder(Ports.DART_ENCODER_1, Ports.DART_ENCODER_2);
+		// dartEncoder = new Encoder(Ports.DART_ENCODER_1, Ports.DART_ENCODER_2);
 		
 		shooter1 = new Talon(Ports.SHOOTER_1);
 		shooter2 = new Talon(Ports.SHOOTER_2);
@@ -47,18 +47,21 @@ public class Shooter {
 		initialized = false;
 		
 		shooterStatus = STOPPED;
-		dartStatus = IN;
+		// dartStatus = IN;
 	}
 	
-	public void shootPressed(){
+	public void shootPressed(){	// Change status when button pressed
 		if(shooterStatus == STOPPED)
 			shooterStatus = SHOOTING;
 	}
 	
+	public void dartUpPressed(){
+	}
+	
 	public void update(){
 		
-		if(initialized){
-			if(shooterStatus == STOPPED){
+		if(initialized){	// Init if it hasn't been initialised
+			if(shooterStatus == STOPPED){	// Update shooter according to status
 				shoot(stopSpeed);
 			}
 			else if(shooterStatus == SHOOTING){
@@ -78,23 +81,15 @@ public class Shooter {
 				}
 			}
 			
-			if(dartStatus == OUT){
-				while(dartEncoder.get() != OUT_COUNT)
-					dartMotor.set(-1);
-			}
-			else{
-				while(dartEncoder.get() != IN_COUNT)
-					dartMotor.set(1);
-			}
 		}
 		else{
-			if(dartHome.get() == true){
+			/* if(dartHome.get() == true){
 				dartEncoder.reset();
 				initialized = true;
 			}
 			else{
-				dartMotor.set(-1);
-			}
+				dartMotor.set(-1);	//TODO a bit fast? Maybe
+			} */
 		}
 		
 	}
@@ -112,4 +107,7 @@ public class Shooter {
 		shooter2.set(speed);
 	}
 	
+	public void setDartSpeed(double speed){
+		dartMotor.set(speed);
+	}
 }

@@ -8,7 +8,7 @@ public class ShooterCommand extends AutoCommand{
 	}
 	
 	@Override
-	public void update(){
+	public void update(SubSystem system){
 		Shooter shooter = Robot.getShooter();
 		shooter.shootPressed();
 		shooter.update();

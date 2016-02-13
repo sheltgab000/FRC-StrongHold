@@ -2,27 +2,24 @@ package org.usfirst.frc.team829.robot;
 
 public class Ports {
 
-	// Motors
-	public static final int DRIVE_BACK_LEFT = 1;
-	public static final int DRIVE_BACK_RIGHT = 2;
-	public static final int DRIVE_FRONT_LEFT = 3;
-	public static final int DRIVE_FRONT_RIGHT = 4;
-	public static final int SHOOTER_1 = 6;
-	public static final int SHOOTER_2 = 7;
-	public static final int DART_MOTOR = 8;
+	public static final int DRIVE_FRONT_RIGHT = 10;
+	public static final int DRIVE_BACK_RIGHT = 11;
+	public static final int DRIVE_FRONT_LEFT = 12;
+	public static final int DRIVE_BACK_LEFT = 13;
+	public static final int SHOOTER_1 = 14;
+	public static final int SHOOTER_2 = 15;
+	public static final int INTAKE_ROLLER = 0;
+	public static final int INTAKE_PIVOT = 1;
+	public static final int DART_MOTOR = 2;
+	public static final int RANGE_IN = 3;
+	public static final int RANGE_OUT = 4;
 	
-	// Limit Switches
 	public static final int STOP_SWITCH = 0;
 	public static final int SLOW_SWITCH = 1;
-	public static final int TRAVEL_SWITCH = 2;
-	public static final int DART_HOME = 3;
+	public static final int INTAKE_HOME_SWITCH = 2;
+	public static final int INTAKE_BALL_DETECTOR = 3;
 	
-	// Solenoids
 	public static final int SHIFTER_HIGH = 0;
 	public static final int SHIFTER_LOW = 1;
-	
-	// Encoders
-	public static final int DART_ENCODER_1 = 0;
-	public static final int DART_ENCODER_2 = 1;
 	
 }
