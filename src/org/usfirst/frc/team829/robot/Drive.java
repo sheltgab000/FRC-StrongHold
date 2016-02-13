@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Drive extends Subsytem{
+public class Drive extends SubSystem{
 
 	// Fields: Integers and variables necessary for the methods inside of the class to work
 	int transmissionStatus;

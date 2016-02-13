@@ -1,5 +1,7 @@
 package org.usfirst.frc.team829.robot;
 
-public class Subsytem {
+abstract public class SubSystem {
 
+	
+	
 }
