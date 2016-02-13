@@ -1,8 +1,10 @@
 package org.usfirst.frc.team829.robot;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter {
 	
@@ -25,9 +27,9 @@ public class Shooter {
 	// private final int OUT = 1;	// out
 	// private final int IN = 0;	// in
 	
-	DigitalInput stopSwitch, slowSwitch, travelSwitch, dartHome;	// Limit switches
+	DigitalInput stopSwitch, slowSwitch, dartOut, dartIn;	// Limit switches
 	
-	Encoder dartEncoder;	// Encoder
+	AnalogInput dartPot;
 	
 	Talon shooter1, shooter2, dartMotor;	// Motors for shooter and dart
 	
@@ -35,10 +37,10 @@ public class Shooter {
 	public Shooter(){	// Set's everything to it's default value
 		stopSwitch = new DigitalInput(Ports.STOP_SWITCH);
 		slowSwitch = new DigitalInput(Ports.SLOW_SWITCH);
-		// travelSwitch = new DigitalInput(Ports.TRAVEL_SWITCH);
-		// dartHome = new DigitalInput(Ports.DART_HOME);
+		dartIn = new DigitalInput(Ports.DART_IN_SWITCH);
+		dartOut = new DigitalInput(Ports.DART_OUT_SWITCH);
 		
-		// dartEncoder = new Encoder(Ports.DART_ENCODER_1, Ports.DART_ENCODER_2);
+		dartPot = new AnalogInput(Ports.DART_POT);
 		
 		shooter1 = new Talon(Ports.SHOOTER_1);
 		shooter2 = new Talon(Ports.SHOOTER_2);
@@ -59,6 +61,10 @@ public class Shooter {
 	}
 	
 	public void update(){
+		
+		SmartDashboard.putNumber("Dart Pot:", dartPot.getValue());
+		SmartDashboard.putBoolean("Dart In", dartIn.get());
+		SmartDashboard.putBoolean("Dart Out", dartOut.get());
 		
 		if(initialized){	// Init if it hasn't been initialised
 			if(shooterStatus == STOPPED){	// Update shooter according to status
@@ -108,6 +114,9 @@ public class Shooter {
 	}
 	
 	public void setDartSpeed(double speed){
-		dartMotor.set(speed);
+		if(speed > 0 && dartOut.get() != true)
+			dartMotor.set(speed);
+		else if(dartIn.get() != true)
+			dartMotor.set(speed);
 	}
 }
