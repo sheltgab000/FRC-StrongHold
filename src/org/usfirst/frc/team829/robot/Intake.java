@@ -56,16 +56,16 @@ public class Intake {
 		
 		switch(pivotState){
 		case LOADING:
-			if(ballSeen){
+			if(ballSeen){	// If you see the ball dont go
 				setRollerSpeed(0);
 			}
-			else{
+			else{			// If you don't do
 				setRollerSpeed(-.4);
 			}
 			
-			setPivotSpeed(-1);
+			setPivotSpeed(-1);	// Pivot goes down
 			
-			if(ballSeen && homeSwitch.get())
+			if(ballSeen && homeSwitch.get()) // If it sees the ball and it is down go to USER mode
 				pivotState = USER;
 			break;
 			
