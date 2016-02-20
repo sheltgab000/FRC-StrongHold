@@ -15,49 +15,39 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	
 	static Shooter shooter;
 	
-<<<<<<< HEAD
 	Ultrasonic ultra;
 	double range;
-=======
+	
 	static Intake intake;
->>>>>>> 7a968d078ec1016ef4a2bbf26209e399775aaec6
 	
 	Compressor compressor;		// Limit switches used for the shooter
 	
 	Joystick dual, leftStick, rightStick;	// Controls being used with the robot
-	
-<<<<<<< HEAD
+
 	VisionHelper visionHelper;
 	
-	public void robotInit() {	
-=======
+	public void robotInit() {
 	//VisionHelper visionHelper;
-	   public void robotInit() {	
->>>>>>> 7a968d078ec1016ef4a2bbf26209e399775aaec6
-		   
-	       leftStick = new Joystick(Controller.LEFT_STICK);		// Initializes the Joysticks used
-	       rightStick = new Joystick(Controller.RIGHT_STICK);	// ...
-	       dual = new Joystick(Controller.DUAL);			
+		leftStick = new Joystick(Controller.LEFT_STICK);		// Initializes the Joysticks used
+		rightStick = new Joystick(Controller.RIGHT_STICK);	// ...
+	    dual = new Joystick(Controller.DUAL);			
 	       
-	       Compressor compressor = new Compressor();	//set up the compressor
-	       compressor.start();							// START COMPRESSOR
+	    Compressor compressor = new Compressor();	//set up the compressor
+	    compressor.start();							// START COMPRESSOR
 	       
-	       drive = new Drive();
+	    drive = new Drive();
 	       
-	       shooter = new Shooter();
-	       
-<<<<<<< HEAD
-	       ultra = new Ultrasonic(Ports.RANGEFINDER_OUTPUT, Ports.RANGEFINDER_INPUT);
-	       ultra.setAutomaticMode(true);
-=======
-	       intake = new Intake();
->>>>>>> 7a968d078ec1016ef4a2bbf26209e399775aaec6
+	    shooter = new Shooter();
+
+	    ultra = new Ultrasonic(Ports.RANGEFINDER_OUTPUT, Ports.RANGEFINDER_INPUT);
+	    ultra.setAutomaticMode(true);
+	    intake = new Intake();
 	
-	       /*visionHelper = new VisionHelper();
-	       visionHelper.setHueRange(100, 155);
-	       visionHelper.setSatRange(67, 255);
-	       visionHelper.setValRange(200, 255);
-	       visionHelper.setUploadingToServer(true);*/
+	    /*visionHelper = new VisionHelper();
+	    visionHelper.setHueRange(100, 155);
+	    visionHelper.setSatRange(67, 255);
+	    visionHelper.setValRange(200, 255);
+	    visionHelper.setUploadingToServer(true);*/
         
     }
     

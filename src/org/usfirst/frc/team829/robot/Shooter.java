@@ -58,11 +58,8 @@ public class Shooter {
 	}
 	
 	public void shootPressed(){	// Change status when button pressed
-<<<<<<< HEAD
 		if(shooterStatus == STOPPED)
-=======
 		if(shooterStatus == STOPPED){
->>>>>>> 7a968d078ec1016ef4a2bbf26209e399775aaec6
 			shooterStatus = SHOOTING;
 			startTime = System.currentTimeMillis();
 		}
@@ -71,12 +68,7 @@ public class Shooter {
 	public void dartUpPressed(){
 	}
 	
-	public void dartUpPressed(){
-	}
-	
 	public void update(){
-		
-<<<<<<< HEAD
 		if(initialized){	// Init if it hasn't been initialised
 			if(shooterStatus == STOPPED){	// Update shooter according to status
 				shoot(stopSpeed);
@@ -116,7 +108,6 @@ public class Shooter {
 			else{
 				dartMotor.set(-1);	//TODO a bit fast? Maybe
 			}
-=======
 		SmartDashboard.putNumber("Dart Pot:", dartPot.getValue());
 		SmartDashboard.putBoolean("Dart In", dartIn.get());
 		SmartDashboard.putBoolean("Dart Out", dartOut.get());
@@ -142,7 +133,6 @@ public class Shooter {
 		case STOPPED:
 			shoot(stopSpeed);
 			break;
->>>>>>> 7a968d078ec1016ef4a2bbf26209e399775aaec6
 		}
 		
 	}
