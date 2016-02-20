@@ -13,7 +13,7 @@ public class ShifterCommand extends AutoCommand{
 	}
 	
 	@Override
-	public void update(){
+	public void update(SubSystem system){
 		Drive drive = Robot.getDrive();
 		if(targetShifterStatus ==  HIGH){
 			drive.transmissionStatus = HIGH;

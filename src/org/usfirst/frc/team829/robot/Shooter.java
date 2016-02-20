@@ -1,58 +1,74 @@
 package org.usfirst.frc.team829.robot;
 
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter {
 	
 	// Fields
-	private final double shootSpeed = 0.90;	// Variables for when shooting
-	private final double slowSpeed = 0.20;	// slowing
+	private double shootSpeed = 0.90;	// Variables for when shooting
+	private double slowSpeed = 0.18;	// slowing
 	private final double stopSpeed = 0;		// or stopping
 	
-	private final double OUT_COUNT = 57;	// Variables for encoder counts
-	private final double IN_COUNT = 0;		// ...
-	
-	private boolean initialized;	// Boolean that keeps track of whether it has been initialized or not
+	private double TIME_FOR_SHOOT = 275;	//variables for shooter time kill
+	private long startTime;					//			...
 	
 	private int shooterStatus;		// Variable that stores shooter's status
 	private final int STOPPED = 0;	// stopped
 	private final int SHOOTING = 1;	// shooting
 	private final int SLOWING = 2;	// slowing
 	
-	private int dartStatus;		// Variable that stores dart's status
-	private final int OUT = 1;	// out
-	private final int IN = 0;	// in
+	private int LOAD_POS = 20;
+	private int SHOOT_POS = 50;
+	private int TRAVEL_POS = 10;
 	
-	DigitalInput stopSwitch, slowSwitch, travelSwitch, dartHome;	// Limit switches
+	DigitalInput stopSwitch, slowSwitch, dartOut, dartIn;	// Limit switches
 	
-	Encoder dartEncoder;	// Encoder
+	AnalogInput dartPot;
 	
-	Talon shooter1, shooter2, dartMotor;	// Motors for shooter and dart
+	CANTalon shooter1, shooter2;
+	Talon dartMotor;	// Motors for shooter and dart
 	
 	// Constructor
 	public Shooter(){	// Set's everything to it's default value
 		stopSwitch = new DigitalInput(Ports.STOP_SWITCH);
 		slowSwitch = new DigitalInput(Ports.SLOW_SWITCH);
-		travelSwitch = new DigitalInput(Ports.TRAVEL_SWITCH);
-		dartHome = new DigitalInput(Ports.DART_HOME);
+		dartIn = new DigitalInput(Ports.DART_IN_SWITCH);
+		dartOut = new DigitalInput(Ports.DART_OUT_SWITCH);
 		
-		dartEncoder = new Encoder(Ports.DART_ENCODER_1, Ports.DART_ENCODER_2);
+		dartPot = new AnalogInput(Ports.DART_POT);
 		
-		shooter1 = new Talon(Ports.SHOOTER_1);
-		shooter2 = new Talon(Ports.SHOOTER_2);
+		shooter1 = new CANTalon(Ports.SHOOTER_1);
+		shooter2 = new CANTalon(Ports.SHOOTER_2);
 		dartMotor = new Talon(Ports.DART_MOTOR);
 		
-		initialized = false;
 		
 		shooterStatus = STOPPED;
-		dartStatus = IN;
+		
+		startTime = System.currentTimeMillis();
+		
+		SmartDashboard.putNumber("shootSpeed", shootSpeed);
+		SmartDashboard.putNumber("slowSpeed", slowSpeed);
+		SmartDashboard.putNumber("Time for Shoot", TIME_FOR_SHOOT);
+		
+		// dartStatus = IN;
 	}
 	
 	public void shootPressed(){	// Change status when button pressed
+<<<<<<< HEAD
 		if(shooterStatus == STOPPED)
+=======
+		if(shooterStatus == STOPPED){
+>>>>>>> 7a968d078ec1016ef4a2bbf26209e399775aaec6
 			shooterStatus = SHOOTING;
+			startTime = System.currentTimeMillis();
+		}
+	}
+	
+	public void dartUpPressed(){
 	}
 	
 	public void dartUpPressed(){
@@ -60,6 +76,7 @@ public class Shooter {
 	
 	public void update(){
 		
+<<<<<<< HEAD
 		if(initialized){	// Init if it hasn't been initialised
 			if(shooterStatus == STOPPED){	// Update shooter according to status
 				shoot(stopSpeed);
@@ -99,6 +116,33 @@ public class Shooter {
 			else{
 				dartMotor.set(-1);	//TODO a bit fast? Maybe
 			}
+=======
+		SmartDashboard.putNumber("Dart Pot:", dartPot.getValue());
+		SmartDashboard.putBoolean("Dart In", dartIn.get());
+		SmartDashboard.putBoolean("Dart Out", dartOut.get());
+		SmartDashboard.putBoolean("Stop Switch", stopSwitch.get());
+		SmartDashboard.putBoolean("slowSwitch", slowSwitch.get());
+		SmartDashboard.putNumber("shooter status", shooterStatus);
+		shootSpeed = SmartDashboard.getNumber("shootSpeed");
+		slowSpeed = SmartDashboard.getNumber("slowSpeed");
+		TIME_FOR_SHOOT = SmartDashboard.getNumber("Time for Shoot");
+			
+		
+		switch(shooterStatus){
+		case SHOOTING:
+			shoot(shootSpeed);
+			if(!slowSwitch.get()/* || !stopSwitch.get() */|| System.currentTimeMillis() - startTime >= TIME_FOR_SHOOT)
+				shooterStatus = SLOWING;
+			break;
+		case SLOWING:
+			shoot(slowSpeed);
+			if(!stopSwitch.get())
+				shooterStatus = STOPPED;
+			break;
+		case STOPPED:
+			shoot(stopSpeed);
+			break;
+>>>>>>> 7a968d078ec1016ef4a2bbf26209e399775aaec6
 		}
 		
 	}
@@ -107,13 +151,28 @@ public class Shooter {
 		return shooterStatus;
 	}
 	
-	public int getDartStatus(){
-		return dartStatus;
-	}
-	
 	public void shoot(double speed){
 		shooter1.set(speed);
 		shooter2.set(speed);
 	}
 	
+	public void setDartSpeed(double speed){
+		
+		//System.out.println("Speed: " + speed + " Dart Out: " + dartOut.get() + " Dart In: " + dartIn.get());
+		
+		if(dartIn.get() == false)
+			System.out.println("Dart In");
+		if(dartOut.get() == false)
+			System.out.println("Dart Out");
+		if(speed > 0 && dartOut.get() == true){
+			dartMotor.set(speed);
+			System.out.println("Running");
+		}
+		else if(speed < 0 && dartIn.get() == true){
+			dartMotor.set(speed);
+			System.out.println("Running");
+		}
+		else if((speed >= 0 || speed <= 0) && (dartIn.get() == false || dartOut.get() == false))
+			dartMotor.set(0);
+	}
 }
