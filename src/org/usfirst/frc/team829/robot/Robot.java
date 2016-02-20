@@ -77,8 +77,11 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     	shooter.update(-dual.getRawAxis(3));	//updates the shooter statuses and controls the speeds
     	
     	
-    	if(dual.getRawButton(Controller.SHOOT_BUTTON) && leftStick.getTrigger())	//set the shooter status to SHOOTING when button is pressed
-    		shooter.shootPressed();	
+    	if(dual.getRawButton(Controller.SHOOT_BUTTON))	//set the shooter status to SHOOTING when button is pressed
+    		shooter.shootPressed();
+    	
+    	if(leftStick.getTrigger())
+    		shooter.readyPressed();
     	
     	intake.update(-dual.getRawAxis(1));			//update the intakes movement based on state and sends the joystick value if state is User-Control	
     	
