@@ -9,7 +9,11 @@ public class Controller {
 	
 	// Buttons used during driver control
 	public static final int TRANSMISSION_BUTTON = 9;
-	public static final int FIRE_BUTTON = 2;
-	public static final int DART_OUT_BUTTON = 3;
-	public static final int DART_IN_BUTTON = 4;
+	public static final int SHOOT_BUTTON = 2;
+	public static final int INTAKE_IN = 1;
+	public static final int INTAKE_EJECT = 8;
+	public static final int INTAKE_LOAD = 4;
+	
+	public static final int DART_TO_IN = 7;
+	public static final int DART_TO_OUT = 5;
 }

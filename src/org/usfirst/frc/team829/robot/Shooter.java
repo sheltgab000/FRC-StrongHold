@@ -69,29 +69,30 @@ public class Shooter {
 	
 	public void update(){
 		
-		SmartDashboard.putNumber("Dart Pot:", dartPot.getValue());
-		SmartDashboard.putBoolean("Dart In", dartIn.get());
-		SmartDashboard.putBoolean("Dart Out", dartOut.get());
-		SmartDashboard.putBoolean("Stop Switch", stopSwitch.get());
-		SmartDashboard.putBoolean("slowSwitch", slowSwitch.get());
-		SmartDashboard.putNumber("shooter status", shooterStatus);
-		shootSpeed = SmartDashboard.getNumber("shootSpeed");
-		slowSpeed = SmartDashboard.getNumber("slowSpeed");
-		TIME_FOR_SHOOT = SmartDashboard.getNumber("Time for Shoot");
+		SmartDashboard.putNumber("Dart Pot:", dartPot.getValue());		//Add debugging values to the SmartDashboard
+		SmartDashboard.putBoolean("Dart In", dartIn.get());				//				  \/
+		SmartDashboard.putBoolean("Dart Out", dartOut.get());			//				  \/
+		SmartDashboard.putBoolean("Stop Switch", stopSwitch.get());		//				  \/
+		SmartDashboard.putBoolean("slowSwitch", slowSwitch.get());		//				  \/		
+		SmartDashboard.putNumber("shooter status", shooterStatus);		//				  \/	
+		shootSpeed = SmartDashboard.getNumber("shootSpeed");			//				  \/
+		slowSpeed = SmartDashboard.getNumber("slowSpeed");				//				  \/
+		TIME_FOR_SHOOT = SmartDashboard.getNumber("Time for Shoot");	//				  \/
 			
 		
-		switch(shooterStatus){
-		case SHOOTING:
+		//Move through the shooter statuses and adjust accordingly
+		switch(shooterStatus){	
+		case SHOOTING:			//Go at shootign speed until either the slow switch is hit or the timeout expires
 			shoot(shootSpeed);
-			if(!slowSwitch.get()/* || !stopSwitch.get() */|| System.currentTimeMillis() - startTime >= TIME_FOR_SHOOT)
-				shooterStatus = SLOWING;
+			if(!slowSwitch.get()|| System.currentTimeMillis() - startTime >= TIME_FOR_SHOOT)	//moves to a slowing status when the slow switch is hit
+				shooterStatus = SLOWING;														//or the time out expires
 			break;
-		case SLOWING:
+		case SLOWING:		//Go at the slow down speed till the stop/home switch is hit 
 			shoot(slowSpeed);
 			if(!stopSwitch.get())
-				shooterStatus = STOPPED;
+				shooterStatus = STOPPED;	//move to STOPPED mode when the switch is seen
 			break;
-		case STOPPED:
+		case STOPPED:			//Don't move
 			shoot(stopSpeed);
 			break;
 		}
@@ -109,21 +110,14 @@ public class Shooter {
 	
 	public void setDartSpeed(double speed){
 		
-		//System.out.println("Speed: " + speed + " Dart Out: " + dartOut.get() + " Dart In: " + dartIn.get());
-		
-		if(dartIn.get() == false)
-			System.out.println("Dart In");
-		if(dartOut.get() == false)
-			System.out.println("Dart Out");
-		if(speed > 0 && dartOut.get() == true){
+		//Only allow the dart to move within the limit switches
+		if(speed > 0 && dartOut.get() == true){		//If the dart is going up and the up switch is not active - go up
 			dartMotor.set(speed);
-			System.out.println("Running");
 		}
-		else if(speed < 0 && dartIn.get() == true){
+		else if(speed < 0 && dartIn.get() == true){	//If the dart is going down and the down switch is not active - go down
 			dartMotor.set(speed);
-			System.out.println("Running");
 		}
-		else if((speed >= 0 || speed <= 0) && (dartIn.get() == false || dartOut.get() == false))
+		else	//stop it if switches are active
 			dartMotor.set(0);
 	}
 }
