@@ -60,7 +60,7 @@ public class Intake {
 				setRollerSpeed(0);
 			}
 			else{			// If you don't do
-				setRollerSpeed(-.4);
+				setRollerSpeed(-.8);
 			}
 			
 			setPivotSpeed(-1);	// Pivot goes down
@@ -70,18 +70,25 @@ public class Intake {
 			break;
 			
 		case DISPENSING:
-			if(intakePot.getValue() >= (LOADING_POS - tolerance) || intakePot.getValue() <= (LOADING_POS + tolerance))
+			if(intakePot.getValue() >= (DISPENSING_POS - tolerance) && intakePot.getValue() <= (DISPENSING_POS + tolerance)){
+				setPivotSpeed(0);
 				if(ball.get())					// If the ball is there dispense it
 					setRollerSpeed(-.4);
 				else{							// Once the ball is no longer there stop the rollers and enable USER
 					setRollerSpeed(0);
 					pivotState = 0;
 				}
-			else
-				goToPos(LOADING_POS);			// Goes to the specified potentiometer position.
+			}
+			else{
+				if(intakePot.getValue() <= DISPENSING_POS - tolerance) // If it is under the target go up
+					setPivotSpeed(-1);
+				else if(intakePot.getValue() >= DISPENSING_POS + tolerance) // If it is above the target go down
+					setPivotSpeed(1);
+			}
 			break;
+			
 		case EJECTING:
-			setRollerSpeed(1);
+			setRollerSpeed(1);	// Spit out ball
 			pivotState = USER;
 			break;
 		case USER:

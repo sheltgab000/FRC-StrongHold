@@ -16,6 +16,11 @@ public class Shooter {
 	private double TIME_FOR_SHOOT = 275;	//variables for shooter time kill
 	private long startTime;					//			...
 	
+	private int dartStatus;
+	private final int UP = 0;
+	private final int DOWN = 1;
+	private final int USER = 2;
+	
 	private int shooterStatus;		// Variable that stores shooter's status
 	private final int STOPPED = 0;	// stopped
 	private final int SHOOTING = 1;	// shooting
@@ -45,6 +50,7 @@ public class Shooter {
 		shooter2 = new CANTalon(Ports.SHOOTER_2);
 		dartMotor = new Talon(Ports.DART_MOTOR);
 		
+		dartStatus = USER;
 		
 		shooterStatus = STOPPED;
 		
@@ -64,10 +70,15 @@ public class Shooter {
 		}
 	}
 	
-	public void dartUpPressed(){
+	public void dartUpPressed(){ // Set dartstatus to up
+		dartStatus = UP;
 	}
 	
-	public void update(){
+	public void dartDownPressed(){
+		dartStatus = DOWN;			// set dartstatus to down
+	}
+	
+	public void update(double speed){
 		
 		SmartDashboard.putNumber("Dart Pot:", dartPot.getValue());		//Add debugging values to the SmartDashboard
 		SmartDashboard.putBoolean("Dart In", dartIn.get());				//				  \/
@@ -78,7 +89,24 @@ public class Shooter {
 		shootSpeed = SmartDashboard.getNumber("shootSpeed");			//				  \/
 		slowSpeed = SmartDashboard.getNumber("slowSpeed");				//				  \/
 		TIME_FOR_SHOOT = SmartDashboard.getNumber("Time for Shoot");	//				  \/
-			
+		
+		switch(dartStatus){
+		case UP:
+			if(dartIn.get())	// if the dart isn't in go down
+    			setDartSpeed(-.5);
+    		else if(!dartIn.get())	// if the dart is in enable user control
+    			dartStatus = USER;
+			break;
+		case DOWN:
+			if(dartOut.get()) // if the dart isn't out go up
+    			setDartSpeed(.5);
+    		else if(!dartOut.get())	// if the dart is out enable user control
+    			dartStatus = USER;
+			break;
+		case USER:
+			setDartSpeed(speed);	// move according to the users speed
+			break;
+		}
 		
 		//Move through the shooter statuses and adjust accordingly
 		switch(shooterStatus){	

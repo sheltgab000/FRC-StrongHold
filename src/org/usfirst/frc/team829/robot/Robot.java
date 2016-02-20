@@ -16,6 +16,7 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	static Intake intake;
 	
 	Compressor compressor;		// Limit switches used for the shooter
+	boolean loadMode;
 	
 	Joystick dual, leftStick, rightStick;	// Controls being used with the robot
 	
@@ -73,36 +74,33 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     		drive.transmissionPressed();
     	}
     	
-    	//shooter.setDartSpeed(-dual.getRawAxis(3));	//manual control of dart - Disabled for now
-    	shooter.update();	//updates the shooter statuses and controls the speeds
+    	shooter.update(-dual.getRawAxis(3));	//updates the shooter statuses and controls the speeds
     	
     	
-    	if(dual.getRawButton(Controller.SHOOT_BUTTON))	//set the shooter status to SHOOTING when button is pressed
+    	if(dual.getRawButton(Controller.SHOOT_BUTTON) && leftStick.getTrigger())	//set the shooter status to SHOOTING when button is pressed
     		shooter.shootPressed();	
     	
     	intake.update(-dual.getRawAxis(1));			//update the intakes movement based on state and sends the joystick value if state is User-Control	
     	
-    	if(dual.getRawButton(Controller.INTAKE_LOAD))		//Move the shooter to load and load ball to intake
-    		intake.upOut();
-    	else if(dual.getRawButton(Controller.INTAKE_EJECT))	//Eject the ball tout of the intake
+    	if(dual.getRawButton(Controller.INTAKE_EJECT))	//Eject the ball tout of the intake
     		intake.ejecting();
     	else if(dual.getRawButton(Controller.INTAKE_IN))	//Move the intake down and load a ball into it
     		intake.downIn();
-    	/*else
-    		intake.setRollerSpeed(0);*/
+    		
+    	if(loadMode){		// When in load mode go up and dispense ball 
+	    	if(!shooter.dartIn.get())	// When shooter all the way in push up intake and dispense ball
+	    		intake.upOut();
+	    	else if(!intake.ball.get())	// Once the ball is no longer seen turn load mode to false
+	    		loadMode = false;
+	    	else						// Push the dart all the way in
+	    		shooter.dartUpPressed();
+    	}
     	
-    	if(dual.getRawButton(Controller.DART_TO_IN)){		//move the shooter to the down position
-    		if(shooter.dartIn.get())
-    			shooter.dartMotor.set(-1);
-    		else if(!shooter.dartIn.get())
-    			shooter.dartMotor.set(0);
+    	if(dual.getRawButton(Controller.DART_TO_IN)){		// start the loading process 
+    		loadMode = true;
     	}
     	else if(dual.getRawButton(Controller.DART_TO_OUT)){		//move the shooter to the up position
-    		System.out.println("Moving to out position");
-    		if(shooter.dartOut.get())
-    			shooter.dartMotor.set(1);
-    		else if(!shooter.dartOut.get())
-    			shooter.dartMotor.set(0);
+    		shooter.dartDownPressed();
     	}
     			
     }
