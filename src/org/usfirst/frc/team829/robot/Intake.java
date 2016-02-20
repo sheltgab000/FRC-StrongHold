@@ -1,106 +1,111 @@
 package org.usfirst.frc.team829.robot;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Intake {
 
 	final int tolerance = 25;
 	
-	//Constants for the pivot
-	final int INITIALIZING = -1;
-	final int INTAKE_POS = 0;
-	final int TRAVEL_POS = 1;
-	final int LOADING_POS = 2;
+	int pivotState;
+	final int USER = 0;	
+	final int DISPENSING = 1;
+	final int LOADING = 2;
+	final int TRAVELING = 3;
+	final int START_POSITION = USER;
 	
-	//Constants for the loading state
-	final int INTAKING = 0;
-	final int STORED = 1;
-	final int EMPTY = 2;
-	final int LOADING = 3;
-	final int EXPORTING = 4;
-	
-	//Encoder positions for the pivot
-	//TODO enter positions
+	int USER_POS = 0;
+	int DISPENSING_POS = 3;
+	int LOADING_POS = 56; //LIMIT SWITCH;
+	int TRAVELING_POS = 0;
 	
 	Talon pivot, roller;		//motors
 	DigitalInput ballDetector;	//photo sensor for if the ball is in the intake
 	DigitalInput homeSwitch;	//home position to calibrate the pivot
+	DigitalInput ball;
+	AnalogInput intakePot;
 	Encoder encoder;			//Tracks the position of the pivot
-	
-	int currentPos;
-	int loadingState;
 	
 	public Intake(){
 		//Set up tracking variables
-		currentPos = INITIALIZING;
-		loadingState = EMPTY;
+		pivotState = START_POSITION;
 		
 		//Set up hardware
 		pivot = new Talon(Ports.INTAKE_PIVOT);
 		roller = new Talon(Ports.INTAKE_ROLLER);
 		ballDetector = new DigitalInput(Ports.INTAKE_BALL_DETECTOR);
 		homeSwitch = new DigitalInput(Ports.INTAKE_HOME_SWITCH);
+		intakePot = new AnalogInput(Ports.INTAKE_POT);
+		ball = new DigitalInput(Ports.BALL_SWITCH);
 		//TODO set up encoder
 	}
 	
 	
 	
-	public void update(){
-		if(currentPos == INITIALIZING){
-			/*TODO initialize*/;
-		}
-		else{
-			switch(loadingState){
-			case INTAKING:
-				
-				break;
-			case STORED:
-				
-				break;
-			case EMPTY:
-				
-				break;
-			case LOADING:
-				
-				break;
-			case EXPORTING:
-				
-				break;
+	public void update(double speed){
+		
+		SmartDashboard.putBoolean("BALL SWITCH", ball.get());
+		
+		switch(pivotState){
+		case LOADING:
+			if(!homeSwitch.get() && !ball.get()){
+				if(!homeSwitch.get())
+					setPivotSpeed(-1);
+				else
+					setPivotSpeed(0);
+				if(!ball.get())
+					setRollerSpeed(-.4);
+				else
+					setRollerSpeed(0);
 			}
+			else{
+				setRollerSpeed(0);
+				setPivotSpeed(0);
+				pivotState = USER;
+			}
+			break;
+		case DISPENSING:
+			goToPos(LOADING_POS);
+			break;
+		case USER:
+			setPivotSpeed(speed);
+			break;
 		}
 	}
 	
-	
-	public void intakePressed(){
-		if(loadingState == STORED)
-			loadingState = EXPORTING;
-		else if(loadingState == EMPTY)
-			loadingState = INTAKING;
+	public void downIn(){
+		pivotState = LOADING;
 	}
 	
-	public void loadPressed(){
-		if(loadingState == STORED)
-			loadingState = LOADING;
+	public void upOut(){
+		pivotState = DISPENSING;
 	}
 	
 	public void setPivotSpeed(double speed){
-		pivot.set(speed);
+		if(speed < 0 && homeSwitch.get())
+			pivot.set(0);
+		else
+			pivot.set(speed);
 	}
 	
 	public void setRollerSpeed(double speed){
 		roller.set(speed);
 	}
 	
-	public boolean goToPos(int target){
-		if(target == currentPos){
-			return true;
+	public void goToPos(int target){
+		
+		if(intakePot.getValue() >= (target - tolerance) || intakePot.getValue() <= (target + tolerance)){
+			setPivotSpeed(0);
 		}
 		else{
-			//TODO Get the encoder code in here
+			if(intakePot.getValue() > target)
+				setPivotSpeed(-1);
+			else
+				setPivotSpeed(1);
 		}
-		return false;
 	}
 	
 	

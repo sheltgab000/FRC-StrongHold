@@ -19,9 +19,12 @@ public class Ports {
 	public static final int DART_IN_SWITCH = 2;
 	public static final int DART_OUT_SWITCH = 3;
 	public static final int INTAKE_HOME_SWITCH = 4;
+	public static final int BALL_SWITCH = 6;
 	
 	public static final int DART_POT = 0;
-	public static final int INTAKE_BALL_DETECTOR = 1;
+	public static final int INTAKE_BALL_DETECTOR = 5;
+	
+	public static final int INTAKE_POT = 1;
 	
 	public static final int SHIFTER_HIGH = 0;
 	public static final int SHIFTER_LOW = 1;

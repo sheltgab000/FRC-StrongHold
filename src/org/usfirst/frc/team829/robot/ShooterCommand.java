@@ -24,5 +24,4 @@ public class ShooterCommand extends AutoCommand{
 			return false;
 		
 	}
-	
 }
