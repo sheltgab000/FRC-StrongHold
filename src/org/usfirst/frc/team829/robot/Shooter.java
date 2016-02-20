@@ -16,10 +16,10 @@ public class Shooter {
 	private double TIME_FOR_SHOOT = 275;	//variables for shooter time kill
 	private long startTime;					//			...
 	
-	private int dartStatus;
-	private final int UP = 0;
-	private final int DOWN = 1;
-	private final int USER = 2;
+	private int dartStatus;					// status for the dart 
+	private final int UP = 0;				// status for up
+	private final int DOWN = 1;				// status for down
+	private final int USER = 2;				// status for user ("TRAVEL") 
 	
 	private int shooterStatus;		// Variable that stores shooter's status
 	private final int STOPPED = 0;	// stopped

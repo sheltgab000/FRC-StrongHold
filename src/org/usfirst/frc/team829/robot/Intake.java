@@ -21,7 +21,7 @@ public class Intake {
 	int USER_POS = 0;
 	int DISPENSING_POS = 3;
 	int LOADING_POS = 56; //LIMIT SWITCH;
-	int TRAVELING_POS = 0;
+	int TRAVELING_POS = 400;
 	
 	Talon pivot, roller;		//motors
 	DigitalInput ballDetector;	//photo sensor for if the ball is in the intake
@@ -92,7 +92,7 @@ public class Intake {
 			pivotState = USER;
 			break;
 		case USER:
-			setPivotSpeed(speed);				// Sets the pivot speed to that of the axis
+			goToPos(TRAVELING_POS); // Instantly goes to the travel position
 			break;
 		}
 	}
@@ -124,15 +124,15 @@ public class Intake {
 	public void goToPos(int target){
 		
 		// Stops pivot if it is within the tolerance of the target
-		if(intakePot.getValue() >= (target - tolerance) || intakePot.getValue() <= (target + tolerance)){
+		if(intakePot.getValue() >= (target - tolerance) && intakePot.getValue() <= (target + tolerance)){
 			setPivotSpeed(0);
 		}
 		// If the position is above or below the target adjust accordingly
 		else{
 			if(intakePot.getValue() > target)
-				setPivotSpeed(-1);
-			else
 				setPivotSpeed(1);
+			else
+				setPivotSpeed(-1);
 		}
 	}
 	

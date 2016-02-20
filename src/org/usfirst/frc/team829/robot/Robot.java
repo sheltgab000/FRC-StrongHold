@@ -70,7 +70,7 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     	
     	drive.update(-leftStick.getY(), -rightStick.getY());	// Drives using joysticks, and changes transmission if needed
     	
-    	if(dual.getRawButton(Controller.TRANSMISSION_BUTTON)){	// Changes transmission if corresponding button is pressed
+    	if(rightStick.getRawButton(Controller.TRANSMISSION_BUTTON)){	// Changes transmission if corresponding button is pressed
     		drive.transmissionPressed();
     	}
     	

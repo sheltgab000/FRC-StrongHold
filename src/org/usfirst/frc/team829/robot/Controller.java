@@ -8,7 +8,7 @@ public class Controller {
 	public static final int DUAL = 3;
 	
 	// Buttons used during driver control
-	public static final int TRANSMISSION_BUTTON = 9;
+	public static final int TRANSMISSION_BUTTON = 2;
 	public static final int SHOOT_BUTTON = 2;
 	public static final int INTAKE_IN = 1;
 	public static final int INTAKE_EJECT = 8;
