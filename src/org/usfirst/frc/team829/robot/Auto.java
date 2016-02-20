@@ -13,26 +13,21 @@ public class Auto {
 	 * 
 	 */
 	
-	public Auto(){
-		/*
-		 * init commands;	Sets the command list depending on the selected autonomous.
-		 * default autoSelection; 	Sets the default autonomous
-		 */
-	}
-	
-	public void getAutoSelector(){
-		/*
-		 * figure out which was selected
-		 * and setup the command list accordingly
-		 */
-	}
-	
-	public void update(){
-		/*
-		 * Execute the current command in the list.
-		 * If the command has been completed then go to the next command in the list.
-		 * To be used in the autonomous periodic in a loop
-		 */
-	}
+	/*
+	 * METHODS:
+	 * 
+	 * Constructor: Auto()
+	 * init commands;	Sets the command list depending on the selected autonomous.
+	 * default autoSelection; 	Sets the default autonomous
+	 * 
+	 * getAutoSelector()
+	 * figure out which was selected
+	 * and setup the command list accordingly
+	 * 
+	 * update()
+	 * Execute the current command in the list.
+	 * If the command has been completed then go to the next command in the list.
+	 * To be used in the autonomous periodic in a loop
+	 */
 	
 }
