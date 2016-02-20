@@ -15,6 +15,7 @@ public class Intake {
 	final int DISPENSING = 1;
 	final int LOADING = 2;
 	final int TRAVELING = 3;
+	final int EJECTING = 4;
 	final int START_POSITION = USER;
 	
 	int USER_POS = 0;
@@ -51,55 +52,71 @@ public class Intake {
 		
 		switch(pivotState){
 		case LOADING:
-			if(!homeSwitch.get() && !ball.get()){
-				if(!homeSwitch.get())
-					setPivotSpeed(-1);
-				else
-					setPivotSpeed(0);
-				if(!ball.get())
-					setRollerSpeed(-.4);
-				else
-					setRollerSpeed(0);
-			}
-			else{
-				setRollerSpeed(0);
+			if(homeSwitch.get())				// If the home switch is pressed pivot stays at position
 				setPivotSpeed(0);
+			else								// If home switch isn't pressed pivot goes down
+				setPivotSpeed(-1);
+			
+			if(ball.get())						// If the IR is triggered rollers stop spinning
+				setRollerSpeed(0);
+			else
+				setPivotSpeed(-1);				// If the IR isn't triggered rollers keep spinning
+			
+			if(homeSwitch.get() & ball.get())	// When both the home switch and IR are triggered USER control is enabled
 				pivotState = USER;
-			}
-			break;
+			
 		case DISPENSING:
-			goToPos(LOADING_POS);
+			if(intakePot.getValue() >= (LOADING_POS - tolerance) || intakePot.getValue() <= (LOADING_POS + tolerance))
+				if(ball.get())					// If the ball is there dispense it
+					setRollerSpeed(-.4);
+				else{							// Once the ball is no longer there stop the rollers and enable USER
+					setRollerSpeed(0);
+					pivotState = 0;
+				}
+			else
+				goToPos(LOADING_POS);			// Goes to the specified potentiometer position.
+			break;
+		case EJECTING:
+			setRollerSpeed(1);
+			pivotState = USER;
 			break;
 		case USER:
-			setPivotSpeed(speed);
+			setPivotSpeed(speed);				// Sets the pivot speed to that of the axis
 			break;
 		}
 	}
 	
 	public void downIn(){
-		pivotState = LOADING;
+		pivotState = LOADING;					// Makes the pivot state change to loading
 	}
 	
 	public void upOut(){
-		pivotState = DISPENSING;
+		pivotState = DISPENSING;				// Makes the pivot state change to 
 	}
 	
-	public void setPivotSpeed(double speed){
+	public void ejecting(){
+		pivotState = EJECTING;
+	}
+	
+	public void setPivotSpeed(double speed){	// Set pivot speed
+		// Disables the pivot if attempting to go down while the limit switch is triggered
 		if(speed < 0 && homeSwitch.get())
 			pivot.set(0);
 		else
 			pivot.set(speed);
 	}
 	
-	public void setRollerSpeed(double speed){
+	public void setRollerSpeed(double speed){	// Set roller speed
 		roller.set(speed);
 	}
 	
 	public void goToPos(int target){
 		
+		// Stops pivot if it is within the tolerance of the target
 		if(intakePot.getValue() >= (target - tolerance) || intakePot.getValue() <= (target + tolerance)){
 			setPivotSpeed(0);
 		}
+		// If the position is above or below the target adjust accordingly
 		else{
 			if(intakePot.getValue() > target)
 				setPivotSpeed(-1);
