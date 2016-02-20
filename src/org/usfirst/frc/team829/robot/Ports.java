@@ -1,7 +1,7 @@
 package org.usfirst.frc.team829.robot;
 
 public class Ports {
-	
+
 	public static final int DRIVE_FRONT_RIGHT = 10;
 	public static final int DRIVE_BACK_RIGHT = 11;
 	public static final int DRIVE_FRONT_LEFT = 12;
@@ -29,11 +29,4 @@ public class Ports {
 	public static final int SHIFTER_HIGH = 0;
 	public static final int SHIFTER_LOW = 1;
 	
-	// Encoders
-	public static final int DART_ENCODER_1 = 0;
-	public static final int DART_ENCODER_2 = 1;
-	
-	// UltraSonic Range Finder
-	public static final int RANGEFINDER_INPUT = 8;
-	public static final int RANGEFINDER_OUTPUT = 9;
 }

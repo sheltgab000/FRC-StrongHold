@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -15,39 +14,33 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	
 	static Shooter shooter;
 	
-	Ultrasonic ultra;
-	double range;
-	
 	static Intake intake;
 	
 	Compressor compressor;		// Limit switches used for the shooter
 	
 	Joystick dual, leftStick, rightStick;	// Controls being used with the robot
-
-	VisionHelper visionHelper;
 	
-	public void robotInit() {
 	//VisionHelper visionHelper;
-		leftStick = new Joystick(Controller.LEFT_STICK);		// Initializes the Joysticks used
-		rightStick = new Joystick(Controller.RIGHT_STICK);	// ...
-	    dual = new Joystick(Controller.DUAL);			
+	   public void robotInit() {	
+		   
+	       leftStick = new Joystick(Controller.LEFT_STICK);		// Initializes the Joysticks used
+	       rightStick = new Joystick(Controller.RIGHT_STICK);	// ...
+	       dual = new Joystick(Controller.DUAL);			
 	       
-	    Compressor compressor = new Compressor();	//set up the compressor
-	    compressor.start();							// START COMPRESSOR
+	       Compressor compressor = new Compressor();	//set up the compressor
+	       compressor.start();							// START COMPRESSOR
 	       
-	    drive = new Drive();
+	       drive = new Drive();
 	       
-	    shooter = new Shooter();
-
-	    ultra = new Ultrasonic(Ports.RANGEFINDER_OUTPUT, Ports.RANGEFINDER_INPUT);
-	    ultra.setAutomaticMode(true);
-	    intake = new Intake();
+	       shooter = new Shooter();
+	       
+	       intake = new Intake();
 	
-	    /*visionHelper = new VisionHelper();
-	    visionHelper.setHueRange(100, 155);
-	    visionHelper.setSatRange(67, 255);
-	    visionHelper.setValRange(200, 255);
-	    visionHelper.setUploadingToServer(true);*/
+	       /*visionHelper = new VisionHelper();
+	       visionHelper.setHueRange(100, 155);
+	       visionHelper.setSatRange(67, 255);
+	       visionHelper.setValRange(200, 255);
+	       visionHelper.setUploadingToServer(true);*/
         
     }
     
@@ -84,7 +77,8 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     	shooter.update();
     	shooter.setDartSpeed(-dual.getRawAxis(3));
     	
-    	range = ultra.getRangeInches();
+    	if(dual.getRawButton(Controller.FIRE_BUTTON))
+    		shooter.shootPressed();	
     	
     	intake.update(-dual.getRawAxis(1));
     	

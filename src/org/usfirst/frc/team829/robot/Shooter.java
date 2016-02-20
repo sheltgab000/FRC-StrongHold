@@ -58,7 +58,6 @@ public class Shooter {
 	}
 	
 	public void shootPressed(){	// Change status when button pressed
-		if(shooterStatus == STOPPED)
 		if(shooterStatus == STOPPED){
 			shooterStatus = SHOOTING;
 			startTime = System.currentTimeMillis();
@@ -69,45 +68,7 @@ public class Shooter {
 	}
 	
 	public void update(){
-		if(initialized){	// Init if it hasn't been initialised
-			if(shooterStatus == STOPPED){	// Update shooter according to status
-				shoot(stopSpeed);
-			}
-			else if(shooterStatus == SHOOTING){
-				if(slowSwitch.get()){
-					shooterStatus = SLOWING;
-				}
-				else{
-					shoot(shootSpeed);
-				}
-			}
-			else{
-				if(stopSwitch.get()){
-					shooterStatus = STOPPED;
-				}
-				else{
-					shoot(slowSpeed);
-				}
-			}
-			
-			//TODO Make it so the following code doesn't trap the code in a loop
-			if(dartStatus == OUT){	// Update DART accordingly
-				while(dartEncoder.get() != OUT_COUNT)
-					dartMotor.set(-1);
-			}
-			else{
-				while(dartEncoder.get() != IN_COUNT)
-					dartMotor.set(1);
-			}
-		}
-		else{
-			if(dartHome.get() == true){
-				dartEncoder.reset();
-				initialized = true;
-			}
-			else{
-				dartMotor.set(-1);	//TODO a bit fast? Maybe
-			}
+		
 		SmartDashboard.putNumber("Dart Pot:", dartPot.getValue());
 		SmartDashboard.putBoolean("Dart In", dartIn.get());
 		SmartDashboard.putBoolean("Dart Out", dartOut.get());
