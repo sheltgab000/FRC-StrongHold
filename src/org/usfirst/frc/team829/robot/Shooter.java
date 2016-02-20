@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Shooter {
 	
 	// Fields
-	private double shootSpeed = 0.90;	// Variables for when shooting
+	private double shootSpeed = 0.20;	// Variables for when shooting
 	private double slowSpeed = 0.18;	// slowing
 	private final double stopSpeed = 0;		// or stopping
 	

@@ -44,26 +44,30 @@ public class Intake {
 		//TODO set up encoder
 	}
 	
-	
+	boolean ballSeen;
 	
 	public void update(double speed){
+		ballSeen = ball.get();
+		SmartDashboard.putBoolean("BALL SWITCH", ballSeen);
+		System.out.println(ball.get());
+		SmartDashboard.putBoolean("INTAKE HOME", homeSwitch.get());
+		SmartDashboard.putNumber("Pivot State", pivotState);
 		
-		SmartDashboard.putBoolean("BALL SWITCH", ball.get());
 		
 		switch(pivotState){
 		case LOADING:
-			if(homeSwitch.get())				// If the home switch is pressed pivot stays at position
-				setPivotSpeed(0);
-			else								// If home switch isn't pressed pivot goes down
-				setPivotSpeed(-1);
-			
-			if(ball.get())						// If the IR is triggered rollers stop spinning
+			if(ballSeen){
 				setRollerSpeed(0);
-			else
-				setPivotSpeed(-1);				// If the IR isn't triggered rollers keep spinning
+			}
+			else{
+				setRollerSpeed(-.4);
+			}
 			
-			if(homeSwitch.get() & ball.get())	// When both the home switch and IR are triggered USER control is enabled
+			setPivotSpeed(-1);
+			
+			if(ballSeen && homeSwitch.get())
 				pivotState = USER;
+			break;
 			
 		case DISPENSING:
 			if(intakePot.getValue() >= (LOADING_POS - tolerance) || intakePot.getValue() <= (LOADING_POS + tolerance))

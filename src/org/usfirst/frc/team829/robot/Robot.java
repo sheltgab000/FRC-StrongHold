@@ -88,8 +88,8 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     		intake.ejecting();
     	else if(dual.getRawButton(Controller.INTAKE_IN))	//Move the intake down and load a ball into it
     		intake.downIn();
-    	else
-    		intake.setRollerSpeed(0);
+    	/*else
+    		intake.setRollerSpeed(0);*/
     	
     	if(dual.getRawButton(Controller.DART_TO_IN)){		//move the shooter to the down position
     		if(shooter.dartIn.get())
