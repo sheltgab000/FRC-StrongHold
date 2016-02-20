@@ -77,7 +77,7 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     	shooter.update(-dual.getRawAxis(3));	//updates the shooter statuses and controls the speeds
     	
     	
-    	if(dual.getRawButton(Controller.SHOOT_BUTTON))	//set the shooter status to SHOOTING when button is pressed
+    	if(dual.getRawButton(Controller.SHOOT_BUTTON) && dual.getRawButton(10))	//set the shooter status to SHOOTING when button is pressed
     		shooter.shootPressed();
     	
     	if(leftStick.getTrigger())
@@ -85,13 +85,13 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     	
     	intake.update(-dual.getRawAxis(1));			//update the intakes movement based on state and sends the joystick value if state is User-Control	
     	
-    	if(dual.getRawButton(Controller.INTAKE_EJECT))	//Eject the ball tout of the intake
-    		intake.ejecting();
+    	if(dual.getRawButton(Controller.INTAKE_LOAD))	//Eject the ball tout of the intake
+    		intake.upOut();
     	else if(dual.getRawButton(Controller.INTAKE_IN))	//Move the intake down and load a ball into it
     		intake.downIn();
     		
     	if(loadMode){		// When in load mode go up and dispense ball 
-	    	if(!shooter.dartIn.get())	// When shooter all the way in push up intake and dispense ball
+	    	if(!shooter.dartOut.get())	// When shooter all the way in push up intake and dispense ball
 	    		intake.upOut();
 	    	else if(!intake.ball.get())	// Once the ball is no longer seen turn load mode to false
 	    		loadMode = false;

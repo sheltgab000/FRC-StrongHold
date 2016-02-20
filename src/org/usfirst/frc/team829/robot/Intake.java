@@ -69,10 +69,11 @@ public class Intake {
 			break;
 			
 		case DISPENSING:
+			System.out.println("Dispensing");
 			if(intakePot.getValue() >= (DISPENSING_POS - tolerance) && intakePot.getValue() <= (DISPENSING_POS + tolerance)){
 				setPivotSpeed(0);
 				if(ball.get())					// If the ball is there dispense it
-					setRollerSpeed(-.4);
+					setRollerSpeed(-.8);
 				else{							// Once the ball is no longer there stop the rollers and enable USER
 					setRollerSpeed(0);
 					pivotState = 0;
@@ -87,10 +88,12 @@ public class Intake {
 			break;
 			
 		case EJECTING:
+			System.out.println("Ejecting");
 			setRollerSpeed(1);	// Spit out ball
 			pivotState = USER;
 			break;
 		case USER:
+			System.out.println("Traveling");
 			goToPos(TRAVELING_POS); // Instantly goes to the travel position
 			break;
 		}
