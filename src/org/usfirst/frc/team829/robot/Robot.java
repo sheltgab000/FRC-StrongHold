@@ -26,29 +26,29 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	Joystick rightStick;
 	
 	//VisionHelper visionHelper;
-	   public void robotInit() {	
+	public void robotInit() {	
 		   
-	       leftStick = new Joystick(Controller.LEFT_STICK);		// Initializes the Joysticks used
-	       rightStick = new Joystick(Controller.RIGHT_STICK);	// ...
-	       dual = new Joystick(Controller.DUAL);			
+		leftStick = new Joystick(Controller.LEFT_STICK);		// Initializes the Joysticks used
+	    rightStick = new Joystick(Controller.RIGHT_STICK);	// ...
+	    dual = new Joystick(Controller.DUAL);			
 	       
-	       Compressor compressor = new Compressor();	//set up the compressor
-	       compressor.start();							// START COMPRESSOR
+	    Compressor compressor = new Compressor();	//set up the compressor
+	    compressor.start();							// START COMPRESSOR
 	       
-	       manualMode = false;
-	       loadMode = false;
+	    manualMode = false;
+	    loadMode = false;
+	     
+	    drive = new Drive();
 	       
-	       drive = new Drive();
+	    shooter = new Shooter();
 	       
-	       shooter = new Shooter();
+	    intake = new Intake();
 	       
-	       intake = new Intake();
-	       
-	       /*visionHelper = new VisionHelper();		//Vision Code - disabled for now  because there is no camera
-	       visionHelper.setHueRange(100, 155);
-	       visionHelper.setSatRange(67, 255);
-	       visionHelper.setValRange(200, 255);
-	       visionHelper.setUploadingToServer(true);*/
+	    /*visionHelper = new VisionHelper();		//Vision Code - disabled for now  because there is no camera
+	    visionHelper.setHueRange(100, 155);
+	    visionHelper.setSatRange(67, 255);
+	    visionHelper.setValRange(200, 255);
+	    visionHelper.setUploadingToServer(true);*/
         
     }
     
@@ -75,7 +75,20 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     	SmartDashboard.putNumber("Intake Potentiometer", intake.intakePot.getValue());			//			  \/
     	SmartDashboard.putBoolean("Dart Home", intake.homeSwitch.get());						//			  \/
     	SmartDashboard.putBoolean("Ball Viewer", intake.ball.get());							//			  \/
-    	SmartDashboard.putBoolean("Manual Mde", manualMode);
+    	SmartDashboard.putBoolean("Manual Mode", manualMode);
+    	
+    	shooter.update(-dual.getRawAxis(3));	//updates the shooter statuses and controls the speed
+    	drive.update(-leftStick.getY(), -rightStick.getY());
+    	
+    	if(rightStick.getRawButton(Controller.TRANSMISSION_BUTTON)){	// Changes transmission if corresponding button is pressed
+    		drive.transmissionPressed();
+    	}
+    	
+    	if(dual.getRawButton(Controller.SHOOT_BUTTON) && dual.getRawButton(8))	//set the shooter status to SHOOTING when button is pressed
+    		shooter.shootPressed();
+    	
+    	if(leftStick.getTrigger())
+    		shooter.readyPressed();
     	
     	if(dual.getRawButton(9) && manualMode == false)
     		manualMode = true;
@@ -83,21 +96,6 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     		manualMode = false;
     	
     	if(!manualMode){
-	    	drive.update(-leftStick.getY(), -rightStick.getY());	// Drives using joysticks, and changes transmission if needed
-	    	
-	    	if(rightStick.getRawButton(Controller.TRANSMISSION_BUTTON)){	// Changes transmission if corresponding button is pressed
-	    		drive.transmissionPressed();
-	    	}
-	    	
-	    	shooter.update(-dual.getRawAxis(3));	//updates the shooter statuses and controls the speeds
-	    	
-	    	
-	    	if(dual.getRawButton(Controller.SHOOT_BUTTON) && dual.getRawButton(10))	//set the shooter status to SHOOTING when button is pressed
-	    		shooter.shootPressed();
-	    	
-	    	if(leftStick.getTrigger())
-	    		shooter.readyPressed();
-	    	
 	    	intake.update(-dual.getRawAxis(1));			//update the intakes movement based on state and sends the joystick value if state is User-Control	
 	    	
 	    	if(dual.getRawButton(Controller.INTAKE_LOAD))	//Eject the ball tout of the intake
@@ -123,33 +121,18 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     	}
     	else{
     		
-    		drive.update(-leftStick.getY(), -rightStick.getY());
-    		
-    		shooter.update(-dual.getRawAxis(3));
-    		
-    		if(rightStick.getRawButton(Controller.TRANSMISSION_BUTTON)){	// Changes transmission if corresponding button is pressed
-	    		drive.transmissionPressed();
-	    	}
-    		
-	    	if(dual.getRawButton(Controller.SHOOT_BUTTON) && dual.getRawButton(10))	//set the shooter status to SHOOTING when button is pressed
-	    		shooter.shootPressed();
-	    	
-	    	if(leftStick.getTrigger())
-	    		shooter.readyPressed();
+    		intake.pivotState = intake.USER;
     		
     		if(dual.getRawButton(1))
     			intake.setRollerSpeed(.5);
     		else if(dual.getRawButton(4))
     			intake.setRollerSpeed(1);
-    		else if(dual.getRawButton(2))
-    			intake.setRollerSpeed(-.5);
     		else if(dual.getRawButton(3))
     			intake.setRollerSpeed(-1);
     		else
     			intake.setRollerSpeed(0);
     		
     		intake.setPivotSpeed(-dual.getRawAxis(1));
-    		shooter.setDartSpeed(-dual.getRawAxis(3));
     		
     		if(dual.getRawButton(5))
     			shooter.shoot(.2);
@@ -157,7 +140,6 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     			shooter.shoot(-.2);
     		else
     			shooter.shoot(0);
-    		
     	}
     			
     }

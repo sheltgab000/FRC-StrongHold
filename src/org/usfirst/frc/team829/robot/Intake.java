@@ -49,7 +49,6 @@ public class Intake {
 	
 	public void update(double speed){
 		ballSeen = ball.get();
-		SmartDashboard.putBoolean("BALL SWITCH", ballSeen);
 		SmartDashboard.putBoolean("INTAKE HOME", homeSwitch.get());
 		SmartDashboard.putNumber("Pivot State", pivotState);
 		

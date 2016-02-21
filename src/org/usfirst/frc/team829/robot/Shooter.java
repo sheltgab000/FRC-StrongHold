@@ -91,7 +91,7 @@ public class Shooter {
 		SmartDashboard.putBoolean("Dart Out", dartOut.get());			//				  \/
 		SmartDashboard.putBoolean("Stop Switch", stopSwitch.get());		//				  \/
 		SmartDashboard.putBoolean("Shooter Home Switch", homeSwitch.get());		//				  \/		
-		SmartDashboard.putNumber("shooter status", shooterStatus);		//				  \/	
+		SmartDashboard.putNumber("Shooter Status", shooterStatus);		//				  \/	
 		shootSpeed = SmartDashboard.getNumber("shootSpeed");			//				  \/
 		slowSpeed = SmartDashboard.getNumber("slowSpeed");				//				  \/
 		TIME_FOR_SHOOT = SmartDashboard.getNumber("Time for Shoot");	//				  \/
