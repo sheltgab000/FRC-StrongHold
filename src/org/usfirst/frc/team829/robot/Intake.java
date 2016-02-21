@@ -15,12 +15,13 @@ public class Intake {
 	final int DISPENSING = 1;
 	final int LOADING = 2;
 	final int TRAVELING = 3;
+	final int EJECTING = 4;
 	final int START_POSITION = USER;
 	
 	int USER_POS = 0;
 	int DISPENSING_POS = 3;
 	int LOADING_POS = 56; //LIMIT SWITCH;
-	int TRAVELING_POS = 0;
+	int TRAVELING_POS = 400;
 	
 	Talon pivot, roller;		//motors
 	DigitalInput ballDetector;	//photo sensor for if the ball is in the intake
@@ -43,68 +44,97 @@ public class Intake {
 		//TODO set up encoder
 	}
 	
-	
+	boolean ballSeen;
 	
 	public void update(double speed){
+		ballSeen = ball.get();
+		SmartDashboard.putBoolean("BALL SWITCH", ballSeen);
+		SmartDashboard.putBoolean("INTAKE HOME", homeSwitch.get());
+		SmartDashboard.putNumber("Pivot State", pivotState);
 		
-		SmartDashboard.putBoolean("BALL SWITCH", ball.get());
 		
 		switch(pivotState){
 		case LOADING:
-			if(!homeSwitch.get() && !ball.get()){
-				if(!homeSwitch.get())
-					setPivotSpeed(-1);
-				else
-					setPivotSpeed(0);
-				if(!ball.get())
-					setRollerSpeed(-.4);
-				else
+			if(ballSeen){	// If you see the ball dont go
+				setRollerSpeed(0);
+			}
+			else{			// If you don't do
+				setRollerSpeed(-.8);
+			}
+			
+			setPivotSpeed(-1);	// Pivot goes down
+			
+			if(ballSeen && homeSwitch.get()) // If it sees the ball and it is down go to USER mode
+				pivotState = USER;
+			break;
+			
+		case DISPENSING:
+			System.out.println("Dispensing");
+			if(intakePot.getValue() >= (DISPENSING_POS - tolerance) && intakePot.getValue() <= (DISPENSING_POS + tolerance)){
+				setPivotSpeed(0);
+				if(ball.get())					// If the ball is there dispense it
+					setRollerSpeed(-.8);
+				else{							// Once the ball is no longer there stop the rollers and enable USER
 					setRollerSpeed(0);
+					pivotState = 0;
+				}
 			}
 			else{
-				setRollerSpeed(0);
-				setPivotSpeed(0);
-				pivotState = USER;
+				if(intakePot.getValue() <= DISPENSING_POS - tolerance) // If it is under the target go up
+					setPivotSpeed(-1);
+				else if(intakePot.getValue() >= DISPENSING_POS + tolerance) // If it is above the target go down
+					setPivotSpeed(1);
 			}
 			break;
-		case DISPENSING:
-			goToPos(LOADING_POS);
+			
+		case EJECTING:
+			System.out.println("Ejecting");
+			setRollerSpeed(1);	// Spit out ball
+			pivotState = USER;
 			break;
 		case USER:
-			setPivotSpeed(speed);
+			System.out.println("Traveling");
+			goToPos(TRAVELING_POS); // Instantly goes to the travel position
 			break;
 		}
 	}
 	
 	public void downIn(){
-		pivotState = LOADING;
+		pivotState = LOADING;					// Makes the pivot state change to loading
 	}
 	
 	public void upOut(){
-		pivotState = DISPENSING;
+		pivotState = DISPENSING;				// Makes the pivot state change to 
 	}
 	
-	public void setPivotSpeed(double speed){
+	public void ejecting(){
+		pivotState = EJECTING;
+	}
+	
+	public void setPivotSpeed(double speed){	// Set pivot speed
+		// Disables the pivot if attempting to go down while the limit switch is triggered
 		if(speed < 0 && homeSwitch.get())
 			pivot.set(0);
 		else
 			pivot.set(speed);
 	}
 	
-	public void setRollerSpeed(double speed){
+	public void setRollerSpeed(double speed){	// Set roller speed
 		roller.set(speed);
 	}
 	
 	public void goToPos(int target){
 		
-		if(intakePot.getValue() >= (target - tolerance) || intakePot.getValue() <= (target + tolerance)){
+		// Stops pivot if it is within the tolerance of the target
+		if(intakePot.getValue() >= (target - tolerance) && intakePot.getValue() <= (target + tolerance)){
 			setPivotSpeed(0);
 		}
+		// If the position is above or below the target adjust accordingly
 		else{
 			if(intakePot.getValue() > target)
-				setPivotSpeed(-1);
-			else
 				setPivotSpeed(1);
+			else
+				setPivotSpeed(-1);
 		}
 	}
 	

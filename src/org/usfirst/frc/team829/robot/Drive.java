@@ -7,59 +7,55 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive extends SubSystem{
 
-	// Fields: Integers and variables necessary for the methods inside of the class to work
-	int transmissionStatus;
+	int transmissionStatus;	//Tracks the current status of the transmission
+	
 	final int HIGH = 0;
 	final int LOW = 1;
 	final int DEFAULT_STATE = HIGH;
-	private final int BUTTON_TIMEOUT = 250;
 	
-	private long startTime;
-	DoubleSolenoid shifter;
+	private final int BUTTON_TIMEOUT = 250;	    //A time out within which the transmission switch will not work between presses
+	private long startTime;						//allows comparrison to see if the timeout time has expired
 	
-	//RobotDrive drive;
-	CANTalon backLeft, backRight, frontLeft, frontRight;
+	DoubleSolenoid shifter;		//allow shifting
 	
-	// Constructor: Initializes and defaults the variables to be used in the class
+	CANTalon backLeft, backRight, frontLeft, frontRight;	//control the drive train
+	
 	public Drive(){
 		transmissionStatus = DEFAULT_STATE;	// Sets default transmissionStatus
 		shifter = new DoubleSolenoid(Ports.SHIFTER_HIGH, Ports.SHIFTER_LOW);	// Initializes the Double Solenoid for shifting
-		//drive = new RobotDrive(Ports.DRIVE_BACK_LEFT, Ports.DRIVE_BACK_RIGHT, Ports.DRIVE_FRONT_LEFT, Ports.DRIVE_FRONT_RIGHT);
-		backLeft = new CANTalon(Ports.DRIVE_BACK_LEFT);
-		backRight = new CANTalon(Ports.DRIVE_BACK_RIGHT);
-		frontLeft = new CANTalon(Ports.DRIVE_FRONT_LEFT);
-		frontRight = new CANTalon(Ports.DRIVE_FRONT_RIGHT);
 		
-		startTime = System.currentTimeMillis();
+		backLeft = new CANTalon(Ports.DRIVE_BACK_LEFT);		//initialze the drive motors
+		backRight = new CANTalon(Ports.DRIVE_BACK_RIGHT);	//			\/
+		frontLeft = new CANTalon(Ports.DRIVE_FRONT_LEFT);	//			\/
+		frontRight = new CANTalon(Ports.DRIVE_FRONT_RIGHT); //			\/
+		
+		startTime = System.currentTimeMillis();		//set the intitial time for the shift button timeout
 	}
 	
 	
-	// Methods:
 	public void transmissionPressed(){	// Whenever the button is pressed swaps the current value of the transmission
-		if(System.currentTimeMillis() - startTime >= BUTTON_TIMEOUT){
+		if(System.currentTimeMillis() - startTime >= BUTTON_TIMEOUT){	//if the timeout has not expired - shift
 			if(transmissionStatus == HIGH)
 				transmissionStatus = LOW;
 			else
 				transmissionStatus = HIGH;
-			startTime = System.currentTimeMillis();
+			startTime = System.currentTimeMillis();	//reset the timer for the timeout
 		}
 	}
 	
 	public void update(double leftSpeed, double rightSpeed){	// Changes the speed of the drive accordingly as well as pushing out or pulling in the solenoid
-		//drive.tankDrive(leftSpeed, rightSpeed);
 		
-		SmartDashboard.putNumber("CurrentTime", startTime);
-		SmartDashboard.putNumber("state", transmissionStatus);
+		SmartDashboard.putNumber("CurrentTime", startTime);						//Debugging values to the SmartDashboard
+		SmartDashboard.putNumber("state", transmissionStatus);					//					\/
+		SmartDashboard.putNumber("Left Encoder:", backLeft.getEncPosition());	//					\/
+		SmartDashboard.putNumber("Right Encoder", backRight.getEncPosition());	//					\/
 		
-		SmartDashboard.putNumber("Left Encoder:", backLeft.getEncPosition());
-		SmartDashboard.putNumber("Right Encoder", backRight.getEncPosition());
+		backLeft.set(-leftSpeed);	//set drive motors and reverse the left side
+		backRight.set(rightSpeed);	//					\/
+		frontLeft.set(-leftSpeed);	//					\/
+		frontRight.set(rightSpeed);	//					\/
 		
-		backLeft.set(-leftSpeed);
-		backRight.set(rightSpeed);
-		frontLeft.set(-leftSpeed);
-		frontRight.set(rightSpeed);
-		
-		if(transmissionStatus == HIGH)
+		if(transmissionStatus == HIGH)		//update the transmission based on the current state
 			shifter.set(DoubleSolenoid.Value.kForward);
 		else
 			shifter.set(DoubleSolenoid.Value.kReverse);
