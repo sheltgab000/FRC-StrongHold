@@ -13,8 +13,7 @@ public class Ports {
 	//Talon
 	public static final int INTAKE_ROLLER = 0;	//Ports for Talon controllers
 	public static final int INTAKE_PIVOT = 1;	//			 \/
-	public static final int 
-	DART_MOTOR = 2;		//			 \/
+	public static final int DART_MOTOR = 2;		//			 \/
 	
 	//Digital Inputs
 	public static final int STOP_SWITCH = 0;		// Switch for the shooter to stop at
