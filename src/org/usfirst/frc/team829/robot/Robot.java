@@ -16,7 +16,6 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	static Intake intake;
 	
 	Compressor compressor;		// Limit switches used for the shooter
-	boolean loadMode;
 	boolean manualMode;
 	
 	static Joystick dual;	// Controls being used with the robot
@@ -36,7 +35,6 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	    compressor.start();							// START COMPRESSOR
 	       
 	    manualMode = false;
-	    loadMode = false;
 	     
 	    drive = new Drive();
 	       
@@ -102,18 +100,9 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	    		intake.upOut();
 	    	else if(dual.getRawButton(Controller.INTAKE_IN))	//Move the intake down and load a ball into it
 	    		intake.downIn();
-	    		
-	    	if(loadMode){		// When in load mode go up and dispense ball 
-		    	if(!shooter.dartOut.get())	// When shooter all the way in push up intake and dispense ball
-		    		intake.upOut();
-		    	else if(!intake.ball.get())	// Once the ball is no longer seen turn load mode to false
-		    		loadMode = false;
-		    	else						// Push the dart all the way in
-		    		shooter.dartUpPressed();
-	    	}
 	    	
-	    	if(dual.getRawButton(Controller.DART_TO_IN)){		// start the loading process 
-	    		loadMode = true;
+	    	if(dual.getRawButton(Controller.DART_TO_IN) && !shooter.dartIn.get()){		// start the loading process
+		    		shooter.dartUpPressed();
 	    	}
 	    	else if(dual.getRawButton(Controller.DART_TO_OUT)){		//move the shooter to the up position
 	    		shooter.dartDownPressed();
