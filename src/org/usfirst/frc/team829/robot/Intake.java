@@ -16,6 +16,7 @@ public class Intake {
 	final int LOADING = 2;
 	final int TRAVELING = 3;
 	final int EJECTING = 4;
+	final int MANUAL = 5;
 	final int START_POSITION = USER;
 	
 	int USER_POS = 0;
@@ -95,6 +96,9 @@ public class Intake {
 		case USER:
 			System.out.println("Traveling");
 			goToPos(TRAVELING_POS); // Instantly goes to the travel position
+			break;
+		case MANUAL:
+			setPivotSpeed(speed);
 			break;
 		}
 	}
