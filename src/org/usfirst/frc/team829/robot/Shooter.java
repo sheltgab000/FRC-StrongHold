@@ -2,7 +2,6 @@ package org.usfirst.frc.team829.robot;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,10 +26,6 @@ public class Shooter {
 	private final int SHOOTING = 1;	// shooting
 	private final int SLOWING = 2;	// slowing
 	private final int READY = 3;	// ready
-	
-	private int LOAD_POS = 20;
-	private int SHOOT_POS = 50;
-	private int TRAVEL_POS = 10;
 	
 	boolean shooterReady = false;
 	
