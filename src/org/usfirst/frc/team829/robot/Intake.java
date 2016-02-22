@@ -59,7 +59,7 @@ public class Intake {
 				setRollerSpeed(0);
 			}
 			else{			// If you don't do
-				setRollerSpeed(-1);
+				setRollerSpeed(-.8);
 			}
 			
 			setPivotSpeed(-1);	// Pivot goes down
