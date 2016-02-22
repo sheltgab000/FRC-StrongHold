@@ -83,10 +83,16 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     	}
     	
     	if(dual.getRawButton(Controller.SHOOT_BUTTON) && dual.getRawButton(8))	//set the shooter status to SHOOTING when button is pressed
-    		shooter.shootPressed();
+    		if(intake.pivotState == intake.USER)
+    			shooter.shootPressed();
+    		else
+    			intake.pivotState = intake.USER;
     	
     	if(leftStick.getTrigger())
-    		shooter.readyPressed();
+    		if(intake.pivotState == intake.USER)
+    			shooter.readyPressed();
+    		else
+    			intake.pivotState = intake.USER;
     	
     	if(dual.getRawButton(9) && manualMode == false)
     		manualMode = true;
@@ -97,12 +103,18 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	    	intake.update(-dual.getRawAxis(1));			//update the intakes movement based on state and sends the joystick value if state is User-Control	
 	    	
 	    	if(dual.getRawButton(Controller.INTAKE_LOAD))	//Eject the ball tout of the intake
-	    		intake.upOut();
+	    		if(!shooter.dartIn.get() && shooter.hasRun)
+	    			intake.upOut();
+	    		else
+	    			shooter.setDartSpeed(-1);
 	    	else if(dual.getRawButton(Controller.INTAKE_IN))	//Move the intake down and load a ball into it
 	    		intake.downIn();
 	    	
 	    	if(dual.getRawButton(Controller.DART_TO_IN) && !shooter.dartIn.get()){		// start the loading process
+		    	if(intake.pivotState == intake.USER)	
 		    		shooter.dartUpPressed();
+		    	else
+		    		intake.pivotState = intake.USER;
 	    	}
 	    	else if(dual.getRawButton(Controller.DART_TO_OUT)){		//move the shooter to the up position
 	    		shooter.dartDownPressed();
