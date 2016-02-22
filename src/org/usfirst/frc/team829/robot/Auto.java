@@ -19,7 +19,7 @@ abstract public class Auto {
 		AutoCommand com = commands.get(0);
 		if(com.isComplete())	//checks to see if the oldest command added is complete
 			commands.remove(0);				//if it is complete remove it from the queue
-		com.update(system);
+		com.update();
 		
 	}
 }

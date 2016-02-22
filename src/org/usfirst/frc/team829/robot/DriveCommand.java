@@ -5,7 +5,8 @@ public class DriveCommand extends AutoCommand{
 	double leftSpeed, rightSpeed;	//the speeds for the motors to go
 	int targetDeltaCount;			//the target change in the encoder value
 	
-	public DriveCommand(double leftSpeed, double rightSpeed, int targetDeltaCount){
+	public DriveCommand(SubSystem system,double leftSpeed, double rightSpeed, int targetDeltaCount){
+		super(system);
 		this.leftSpeed = leftSpeed;
 		this.rightSpeed = rightSpeed;
 		this.targetDeltaCount = targetDeltaCount;
@@ -13,7 +14,7 @@ public class DriveCommand extends AutoCommand{
 	
 	// TODO link drive to this class 
 	@Override
-	public void update(SubSystem system) {
+	public void update() {
 		((Drive) system).update(leftSpeed, rightSpeed);
 	}
 
