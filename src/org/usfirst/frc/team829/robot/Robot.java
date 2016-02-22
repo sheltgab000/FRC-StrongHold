@@ -17,6 +17,7 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	
 	Compressor compressor;		// Limit switches used for the shooter
 	boolean manualMode;
+	long currentTime, modeTime;
 	
 	static Joystick dual;	// Controls being used with the robot
 
@@ -75,6 +76,8 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     	SmartDashboard.putBoolean("Ball Viewer", intake.ball.get());							//			  \/
     	SmartDashboard.putBoolean("Manual Mode", manualMode);
     	
+    	currentTime = System.currentTimeMillis();
+    	
     	shooter.update(-dual.getRawAxis(3));	//updates the shooter statuses and controls the speed
     	drive.update(-leftStick.getY(), -rightStick.getY());
     	
@@ -88,10 +91,14 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     	if(leftStick.getTrigger())
     		shooter.readyPressed();
     	
-    	if(dual.getRawButton(9) && manualMode == false)
+    	if(dual.getRawButton(9) && manualMode == false && currentTime - modeTime > 500){
     		manualMode = true;
-    	else if(dual.getRawButton(9) && manualMode == true)
+    		modeTime = System.currentTimeMillis();
+    	}
+    	else if(dual.getRawButton(9) && manualMode == true && currentTime - modeTime > 500){
+    		modeTime = System.currentTimeMillis();
     		manualMode = false;
+    	}
     	
     	if(!manualMode){
 	    	intake.update(-dual.getRawAxis(1));			//update the intakes movement based on state and sends the joystick value if state is User-Control	

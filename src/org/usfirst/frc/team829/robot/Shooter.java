@@ -14,7 +14,7 @@ public class Shooter {
 	private double slowSpeed = 0.18;	// slowing
 	private final double stopSpeed = 0;		// or stopping
 	
-	private double TIME_FOR_SHOOT = 275;	//variables for shooter time kill
+	private double TIME_FOR_SHOOT = 175;	//variables for shooter time kill
 	private long startTime;					//			...
 	
 	private int dartStatus;					// status for the dart 
