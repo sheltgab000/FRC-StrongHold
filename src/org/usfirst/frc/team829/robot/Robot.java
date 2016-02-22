@@ -92,10 +92,12 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     			intake.pivotState = intake.USER;
     	
     	if(leftStick.getTrigger())
-    		if(intake.pivotState == intake.USER)
+    		if(intake.pivotState == intake.USER && !shooter.dartOut.get())
     			shooter.readyPressed();
-    		else
+    		else{
     			intake.pivotState = intake.USER;
+    			shooter.setDartSpeed(1);
+    		}
     	
     	if(dual.getRawButton(9) && manualMode == false && currentTime - modeTime > 500){
     		manualMode = true;
@@ -115,7 +117,13 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	    		else
 	    			shooter.setDartSpeed(-1);
 	    	else if(dual.getRawButton(Controller.INTAKE_IN))	//Move the intake down and load a ball into it
-	    		intake.downIn();
+	    		if(intake.pivotState != intake.LOADING)
+	    			intake.downIn();
+	    		else
+	    			intake.setRollerSpeed(.2);
+	    	
+	    	if(dual.getRawButton(2) && !dual.getRawButton(8) && intake.ball.get())
+	    		intake.setRollerSpeed(.4);
 	    	
 	    	if(dual.getRawButton(Controller.DART_TO_IN) && !shooter.dartIn.get()){		// start the loading process
 		    	if(intake.pivotState == intake.USER)	
@@ -146,8 +154,6 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     			shooter.shoot(.2);
     		else if(dual.getRawButton(6))
     			shooter.shoot(-.2);
-    		else
-    			shooter.shoot(0);
     	}
     			
     }
