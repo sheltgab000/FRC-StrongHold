@@ -21,11 +21,10 @@ public class Ports {
 	public static final int DART_IN_SWITCH = 2;		// Mag switch for the dart being all the way in
 	public static final int DART_OUT_SWITCH = 3;	// Mag switch fot the dart being all the way out
 	public static final int INTAKE_HOME_SWITCH = 4;	// Limit switch for the intake pivoted all the way down
+	public static final int INTAKE_BALL_DETECTOR = 5;
 	public static final int BALL_SWITCH = 6;		// Optical switch 
 	
-	public static final int DART_POT = 0;
-	public static final int INTAKE_BALL_DETECTOR = 5;
-	
+	public static final int DART_POT = 0;			
 	public static final int INTAKE_POT = 1;
 	
 	public static final int SHIFTER_HIGH = 0;

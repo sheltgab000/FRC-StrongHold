@@ -32,7 +32,7 @@ public class Shooter {
 	private int SHOOT_POS = 50;
 	private int TRAVEL_POS = 10;
 	
-	boolean hasRun = false;
+	boolean shooterReady = false;
 	
 	DigitalInput stopSwitch, homeSwitch, dartOut, dartIn;	// Limit switches
 	
@@ -70,7 +70,7 @@ public class Shooter {
 	}
 	
 	public void shootPressed(){	// Change status when button pressed
-		if(hasRun){
+		if(shooterReady){
 			shooterStatus = SHOOTING;
 			startTime = System.currentTimeMillis();
 		}
@@ -119,14 +119,18 @@ public class Shooter {
 		case SHOOTING:			//Go at shootign speed until either the slow switch is hit or the timeout expires
 			System.out.println("Shooting");
 			shoot(shootSpeed);
-			if(System.currentTimeMillis() - startTime >= TIME_FOR_SHOOT)	//moves to a slowing status when the slow switch is hit
-				shooterStatus = SLOWING;														//or the time out expires
+			if(System.currentTimeMillis() - startTime >= TIME_FOR_SHOOT){	//moves to a slowing status when the slow switch is hit
+				shooterStatus = SLOWING;									//or the time out expires
+				
+			}
 			break;
 		case SLOWING:		//Go at the slow down speed till the stop/home switch is hit 
 			System.out.println("Slowing");
 			shoot(slowSpeed);
-			if(!stopSwitch.get())
+			if(!stopSwitch.get()){
 				shooterStatus = STOPPED;	//move to STOPPED mode when the switch is seen
+				shooterReady = false;
+			}
 			break;
 		case STOPPED:			//Don't move
 			System.out.println("Stopped");
@@ -134,7 +138,7 @@ public class Shooter {
 			break;
 		case READY:
 			System.out.println("Ready");
-			if(!hasRun){
+			if(!shooterReady){
 				/*if(dartOut.get()){
 					setDartSpeed(1);
 				}
@@ -144,7 +148,7 @@ public class Shooter {
 				else if(!homeSwitch.get()){
 					System.out.println("Passed sensor");
 					shoot(0);
-					hasRun = true;
+					shooterReady = true;
 					shooterStatus = STOPPED;
 				}
 			}
@@ -158,7 +162,7 @@ public class Shooter {
 	
 	public void readyPressed(){
 		shooterStatus = READY;
-		hasRun = false;
+		shooterReady = false;
 	}
 	
 	public void shoot(double speed){
