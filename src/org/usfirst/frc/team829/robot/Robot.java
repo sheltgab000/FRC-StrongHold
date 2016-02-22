@@ -110,7 +110,7 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	    	intake.update(-dual.getRawAxis(1));			//update the intakes movement based on state and sends the joystick value if state is User-Control	
 	    	
 	    	if(dual.getRawButton(Controller.INTAKE_LOAD))	//Eject the ball tout of the intake
-	    		if(!shooter.dartIn.get() && shooter.hasRun)
+	    		if(!shooter.dartIn.get() && shooter.shooterReady)
 	    			intake.upOut();
 	    		else
 	    			shooter.setDartSpeed(-1);
