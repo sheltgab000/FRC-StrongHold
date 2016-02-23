@@ -3,13 +3,15 @@ package org.usfirst.frc.team829.robot;
 public class DriveCommand extends AutoCommand{
 
 	double leftSpeed, rightSpeed;	//the speeds for the motors to go
-	int targetDeltaCount;			//the target change in the encoder value
+	long targetDeltaCount, startCount;			//the target change in the encoder value
+	
 	
 	public DriveCommand(SubSystem system,double leftSpeed, double rightSpeed, int targetDeltaCount){
 		super(system);
 		this.leftSpeed = leftSpeed;
 		this.rightSpeed = rightSpeed;
 		this.targetDeltaCount = targetDeltaCount;
+		this.startCount = ((Drive) system).getLeftEncoder();
 	}
 	
 	// TODO link drive to this class 
@@ -20,7 +22,7 @@ public class DriveCommand extends AutoCommand{
 
 	@Override
 	public boolean isComplete() {
-		int deltaCount = 0/*get the encoder count*/;
+		long deltaCount = ((Drive) system).getLeftEncoder() - startCount;
 		
 		if(Math.abs(deltaCount) >= Math.abs(targetDeltaCount))
 			return true;

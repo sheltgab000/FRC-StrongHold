@@ -177,4 +177,18 @@ public class Shooter {
 		else	//stop it if switches are active
 			dartMotor.set(0);
 	}
+	
+	public void setshooterState(int state){
+		shooterStatus = state;
+	}
+	
+	public void setDartState(int state){
+		dartStatus = state;
+	}
+	
+	public int getStatus(){
+		return shooterStatus;
+	}
+		
+	
 }

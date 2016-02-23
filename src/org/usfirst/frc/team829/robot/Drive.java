@@ -60,4 +60,12 @@ public class Drive extends SubSystem{
 			shifter.set(DoubleSolenoid.Value.kReverse);
 	}
 	
+	public long getLeftEncoder(){
+		return backLeft.getEncPosition();
+	}
+	
+	public long getRightEncoder(){
+		return backRight.getEncPosition();
+	}
+	
 }

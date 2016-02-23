@@ -42,7 +42,7 @@ public class Intake {
 		homeSwitch = new DigitalInput(Ports.INTAKE_HOME_SWITCH);
 		intakePot = new AnalogInput(Ports.INTAKE_POT);
 		ball = new DigitalInput(Ports.BALL_SWITCH);
-		//TODO set up encoder
+		
 	}
 	
 	boolean ballSeen;
@@ -141,5 +141,12 @@ public class Intake {
 		}
 	}
 	
+	public void setState(int state){
+		pivotState = state;
+	}
+	
+	public int getState(){
+		return pivotState;
+	}
 	
 }
