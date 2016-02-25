@@ -15,7 +15,7 @@ abstract public class AutoCommand {
 	
 	/*
 	 * This is called to see if the command is complete
-	 * It is called after the update in order to see if the command sould be deleted
+	 * It is called after the update in order to see if the command should be deleted
 	 */
 	abstract public boolean isComplete();
 

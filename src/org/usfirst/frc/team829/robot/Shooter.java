@@ -82,8 +82,6 @@ public class Shooter {
 	public void update(double speed){
 		
 		SmartDashboard.putNumber("Dart Pot:", dartPot.getValue());		//Add debugging values to the SmartDashboard
-		SmartDashboard.putBoolean("Dart In", dartIn.get());				//				  \/
-		SmartDashboard.putBoolean("Dart Out", dartOut.get());			//				  \/
 		SmartDashboard.putBoolean("Stop Switch", stopSwitch.get());		//				  \/
 		SmartDashboard.putBoolean("Shooter Home Switch", homeSwitch.get());		//				  \/		
 		SmartDashboard.putNumber("Shooter Status", shooterStatus);		//				  \/	

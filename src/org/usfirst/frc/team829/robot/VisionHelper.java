@@ -61,7 +61,7 @@ public class VisionHelper {
     	criteria[0].lower = (float)PARTICLE_AREA_MIN;
 		//imaqError = NIVision.imaqParticleFilter4(binaryFrame, binaryFrame, criteria, filterOptions, null);
     	if(uploadingToServer)
-    		CameraServer.getInstance().setImage(binaryFrame);
+    		CameraServer.getInstance().setImage(frame);
     	
     	return binaryFrame;
 	}

@@ -25,7 +25,7 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 
 	Joystick rightStick;
 	
-	//VisionHelper visionHelper;
+	VisionHelper visionHelper;
 	public void robotInit() {	
 		   
 		leftStick = new Joystick(Controller.LEFT_STICK);		// Initializes the Joysticks used
@@ -43,11 +43,11 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	       
 	    intake = new Intake();
 	       
-	    /*visionHelper = new VisionHelper();		//Vision Code - disabled for now  because there is no camera
-	    visionHelper.setHueRange(100, 155);
+	    visionHelper = new VisionHelper();		//Vision Code - disabled for now  because there is no camera
+	    /*visionHelper.setHueRange(100, 155);
 	    visionHelper.setSatRange(67, 255);
-	    visionHelper.setValRange(200, 255);
-	    visionHelper.setUploadingToServer(true);*/
+	    visionHelper.setValRange(200, 255);*/
+	    visionHelper.setUploadingToServer(true);
         
     }
     
@@ -64,17 +64,14 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     
     public void teleopInit(){
 
-        
+        visionHelper.startAquisition();
         
     }
     
     public void teleopPeriodic() {			// Teleop Period
-        					
-    	SmartDashboard.putBoolean("Fire Button", dual.getRawButton(Controller.SHOOT_BUTTON));	//Debugging display to SmartDashboard
-    	SmartDashboard.putNumber("Intake Potentiometer", intake.intakePot.getValue());			//			  \/
-    	SmartDashboard.putBoolean("Dart Home", intake.homeSwitch.get());						//			  \/
-    	SmartDashboard.putBoolean("Ball Viewer", intake.ball.get());							//			  \/
-    	SmartDashboard.putBoolean("Manual Mode", manualMode);
+        
+    	visionHelper.createBinaryImage();						//---Upload Values to SmartDashboard---
+    	SmartDashboard.putBoolean("Manual Mode", manualMode);	//				   \/
     	
     	currentTime = System.currentTimeMillis();
     	
@@ -164,7 +161,7 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     }
     
     public void disabledInit(){
-    	
+    	visionHelper.stopAquisition();
     }
     
     public static Drive getDrive(){

@@ -13,7 +13,7 @@ public class Drive extends SubSystem{
 	final int DEFAULT_STATE = HIGH;
 	
 	private final int BUTTON_TIMEOUT = 250;	    //A time out within which the transmission switch will not work between presses
-	private long startTime;						//allows comparrison to see if the timeout time has expired
+	private long startTime;						//allows comparison to see if the timeout time has expired
 	
 	DoubleSolenoid shifter;		//allow shifting
 	
@@ -23,12 +23,12 @@ public class Drive extends SubSystem{
 		transmissionStatus = DEFAULT_STATE;	// Sets default transmissionStatus
 		shifter = new DoubleSolenoid(Ports.SHIFTER_HIGH, Ports.SHIFTER_LOW);	// Initializes the Double Solenoid for shifting
 		
-		backLeft = new CANTalon(Ports.DRIVE_BACK_LEFT);		//initialze the drive motors
+		backLeft = new CANTalon(Ports.DRIVE_BACK_LEFT);		//initialize the drive motors
 		backRight = new CANTalon(Ports.DRIVE_BACK_RIGHT);	//			\/
 		frontLeft = new CANTalon(Ports.DRIVE_FRONT_LEFT);	//			\/
 		frontRight = new CANTalon(Ports.DRIVE_FRONT_RIGHT); //			\/
 		
-		startTime = System.currentTimeMillis();		//set the intitial time for the shift button timeout
+		startTime = System.currentTimeMillis();		//set the initial time for the shift button timeout
 	}
 	
 	
