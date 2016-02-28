@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Intake {
 
-	final int tolerance = 25;
+	final int tolerance = 35;
 	
 	int pivotState;
 	final int USER = 0;	
@@ -119,7 +119,7 @@ public class Intake {
 		if(speed < 0 && homeSwitch.get())
 			pivot.set(0);
 		else
-			pivot.set(speed);
+			pivot.set(speed - 0.1);
 	}
 	
 	public void setRollerSpeed(double speed){	// Set roller speed

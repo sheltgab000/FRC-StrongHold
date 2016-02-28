@@ -9,23 +9,24 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {		// Variable that controls the slowing speed
 	
-	static Drive drive;		
+	static Drive drive;	// Creates the drive object: controls driving and transmission		
 	
-	static Shooter shooter;
+	static Shooter shooter;	// Creates the shooter object: controls shooting and the DART
 	
-	static Intake intake;
+	static Intake intake;	// Creates the intake object: controls the intake's pivot and rollers
 	
 	Compressor compressor;		// Limit switches used for the shooter
-	boolean manualMode;
-	long currentTime, modeTime;
+	boolean manualMode;	// Keeps track of whether or not the controls are in Manual Mode
+	long currentTime, modeTime;	// Variables that stor currentTie and modeTime to create a delay for toggling modes
+	long modeDelay = 500;
 	
-	static Joystick dual;	// Controls being used with the robot
+	static Joystick dual;	// Creates the joystick object that allows you to set the controls for driving
 
-	Joystick leftStick;
+	Joystick leftStick;	// Creates the joystick object for the leftStick
 
-	Joystick rightStick;
+	Joystick rightStick;	// Creates the joystick object for the rightStick
 	
-	VisionHelper visionHelper;
+	VisionHelper visionHelper;	// Vision and stuff
 	public void robotInit() {	
 		   
 		leftStick = new Joystick(Controller.LEFT_STICK);		// Initializes the Joysticks used
@@ -73,42 +74,42 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     	visionHelper.createBinaryImage();						//---Upload Values to SmartDashboard---
     	SmartDashboard.putBoolean("Manual Mode", manualMode);	//				   \/
     	
-    	currentTime = System.currentTimeMillis();
+    	currentTime = System.currentTimeMillis();	// Gets the current time every 20 milliseconds
     	
     	shooter.update(-dual.getRawAxis(3));	//updates the shooter statuses and controls the speed
-    	drive.update(-leftStick.getY(), -rightStick.getY());
+    	drive.update(-leftStick.getY(), -rightStick.getY());	// Allows the drive to be controlled by the joysticks  
     	
     	if(rightStick.getRawButton(Controller.TRANSMISSION_BUTTON)){	// Changes transmission if corresponding button is pressed
     		drive.transmissionPressed();
     	}
     	
-    	if(dual.getRawButton(Controller.SHOOT_BUTTON) && dual.getRawButton(8))	//set the shooter status to SHOOTING when button is pressed
+    	if(dual.getRawButton(Controller.SHOOT_BUTTON) && dual.getRawButton(Controller.SHOOT_SAFETY))	//set the shooter status to SHOOTING when button is pressed
     		if(intake.pivotState == intake.USER)
     			shooter.shootPressed();
     		else
     			intake.pivotState = intake.USER;
     	
-    	if(leftStick.getTrigger())
+    	if(dual.getRawButton(10))
     		if(intake.pivotState == intake.USER && !shooter.dartOut.get())
     			shooter.readyPressed();
     		else{
     			intake.pivotState = intake.USER;
-    			shooter.setDartSpeed(1);
+    			// shooter.setDartSpeed(1);
     		}
     	
-    	if(dual.getRawButton(9) && manualMode == false && currentTime - modeTime > 500){
+    	if(dual.getRawButton(Controller.MODE_BUTTON) && manualMode == false && currentTime - modeTime > modeDelay){
     		manualMode = true;
     		modeTime = System.currentTimeMillis();
     	}
-    	else if(dual.getRawButton(9) && manualMode == true && currentTime - modeTime > 500){
-    		modeTime = System.currentTimeMillis();
-    		manualMode = false;
+    	else if(dual.getRawButton(Controller.MODE_BUTTON) && manualMode == true && currentTime - modeTime > modeDelay){
+    		modeTime = System.currentTimeMillis();	// Sets modeTime to the time in which you pressed the button
+    		manualMode = false;	// Disables the manual mode
     	}
     	
     	if(!manualMode){
 	    	intake.update(-dual.getRawAxis(1));			//update the intakes movement based on state and sends the joystick value if state is User-Control	
 	    	
-	    	if(dual.getRawButton(Controller.INTAKE_LOAD))	//Eject the ball tout of the intake
+	    	if(dual.getRawButton(Controller.INTAKE_LOAD))	//Eject the ball out of the intake
 	    		if(!shooter.dartIn.get() && shooter.shooterReady)
 	    			intake.upOut();
 	    		else
@@ -119,7 +120,7 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
 	    		else
 	    			intake.setRollerSpeed(.2);
 	    	
-	    	if(dual.getRawButton(2) && !dual.getRawButton(8) && intake.ball.get())
+	    	if(dual.getRawButton(Controller.SHOOT_BUTTON) && !dual.getRawButton(Controller.SHOOT_SAFETY) && intake.ball.get())
 	    		intake.setRollerSpeed(.4);
 	    	
 	    	if(dual.getRawButton(Controller.DART_TO_IN) && !shooter.dartIn.get()){		// start the loading process
@@ -136,9 +137,9 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     		
     		intake.pivotState = intake.USER;
     		
-    		if(dual.getRawButton(1))
+    		if(dual.getRawButton(Controller.INTAKE_IN))
     			intake.setRollerSpeed(.5);
-    		else if(dual.getRawButton(4))
+    		else if(dual.getRawButton(Controller.INTAKE_LOAD))
     			intake.setRollerSpeed(1);
     		else if(dual.getRawButton(3))
     			intake.setRollerSpeed(-1);
@@ -148,9 +149,9 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     		intake.setPivotSpeed(-dual.getRawAxis(1));
     		
     		if(dual.getRawButton(5))
-    			shooter.shoot(.2);
+    			shooter.shoot(.2);	// Push the fingers forward
     		else if(dual.getRawButton(6))
-    			shooter.shoot(-.2);
+    			shooter.shoot(-.2);	// Push the fingers backward
     	}
     			
     }
@@ -161,15 +162,15 @@ public class Robot extends IterativeRobot {		// Variable that controls the slowi
     }
     
     public void disabledInit(){
-    	visionHelper.stopAquisition();
+    	visionHelper.stopAquisition();	// Stops viewing and disables images
     }
     
     public static Drive getDrive(){
-    	return drive;
+    	return drive;	// Returns the drive to be used in other classes
     }
     
     public static Shooter getShooter(){
-    	return shooter;
+    	return shooter;	// Returns the shooter to be used in other classes
     }
     
 }

@@ -11,8 +11,9 @@ public class Controller {
 	public static final int TRANSMISSION_BUTTON = 2;
 	public static final int SHOOT_BUTTON = 2;
 	public static final int INTAKE_IN = 1;
-	public static final int INTAKE_EJECT = 8;
+	public static final int SHOOT_SAFETY = 8;
 	public static final int INTAKE_LOAD = 4;
+	public static final int MODE_BUTTON = 9;
 	
 	public static final int DART_TO_IN = 7;
 	public static final int DART_TO_OUT = 5;

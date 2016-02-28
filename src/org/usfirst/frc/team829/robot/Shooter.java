@@ -10,7 +10,7 @@ public class Shooter {
 	
 	// Fields
 	private double shootSpeed = 0.8;	// Variables for when shooting
-	private double slowSpeed = 0.18;	// slowing
+	private double slowSpeed = 0.1;	// slowing
 	private final double stopSpeed = .01;		// or stopping
 	
 	private double TIME_FOR_SHOOT = 175;	//variables for shooter time kill
@@ -112,8 +112,8 @@ public class Shooter {
 		case SHOOTING:			//Go at shootign speed until either the slow switch is hit or the timeout expires
 			System.out.println("Shooting");
 			shoot(shootSpeed);
-			if(System.currentTimeMillis() - startTime >= TIME_FOR_SHOOT){	//moves to a slowing status when the slow switch is hit
-				shooterStatus = SLOWING;									//or the time out expires
+			if(System.currentTimeMillis() - startTime >= TIME_FOR_SHOOT){	//moves to a slowing status when the slow switch is hit  
+				shooterStatus = STOPPED;									//or the time out expires
 				
 			}
 			break;
@@ -136,7 +136,7 @@ public class Shooter {
 					setDartSpeed(1);
 				}
 				else */if(homeSwitch.get()){
-					shoot(.2);
+					shoot(.18);
 				}
 				else if(!homeSwitch.get()){
 					System.out.println("Passed sensor");
